@@ -1,14 +1,9 @@
 package com.example.batch.model;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Setter
-@Getter
 public class Record {
 
     private String CUST_ID_NO;
@@ -22,9 +17,10 @@ public class Record {
     private long BL_GRP_NO;
     private LocalDate MTN_EFF_DT;
 
-    // getters and setters, constructors, equals and hashCode methods
+    // No-arg constructor
     public Record() {}
 
+    // All-args constructor
     public Record(String CUST_ID_NO, long ACCT_NO, String NPA, String NXX, String TLN, long BL_PROD_ID, String DELETE_IND,
                   LocalDateTime ADMIN_CRT_TMSTAMP, long BL_GRP_NO, LocalDate MTN_EFF_DT) {
         this.CUST_ID_NO = CUST_ID_NO;
@@ -39,6 +35,88 @@ public class Record {
         this.MTN_EFF_DT = MTN_EFF_DT;
     }
 
+    // Getters and Setters
+    public String getCUST_ID_NO() {
+        return CUST_ID_NO;
+    }
+
+    public void setCUST_ID_NO(String CUST_ID_NO) {
+        this.CUST_ID_NO = CUST_ID_NO;
+    }
+
+    public long getACCT_NO() {
+        return ACCT_NO;
+    }
+
+    public void setACCT_NO(long ACCT_NO) {
+        this.ACCT_NO = ACCT_NO;
+    }
+
+    public String getNPA() {
+        return NPA;
+    }
+
+    public void setNPA(String NPA) {
+        this.NPA = NPA;
+    }
+
+    public String getNXX() {
+        return NXX;
+    }
+
+    public void setNXX(String NXX) {
+        this.NXX = NXX;
+    }
+
+    public String getTLN() {
+        return TLN;
+    }
+
+    public void setTLN(String TLN) {
+        this.TLN = TLN;
+    }
+
+    public long getBL_PROD_ID() {
+        return BL_PROD_ID;
+    }
+
+    public void setBL_PROD_ID(long BL_PROD_ID) {
+        this.BL_PROD_ID = BL_PROD_ID;
+    }
+
+    public String getDELETE_IND() {
+        return DELETE_IND;
+    }
+
+    public void setDELETE_IND(String DELETE_IND) {
+        this.DELETE_IND = DELETE_IND;
+    }
+
+    public LocalDateTime getADMIN_CRT_TMSTAMP() {
+        return ADMIN_CRT_TMSTAMP;
+    }
+
+    public void setADMIN_CRT_TMSTAMP(LocalDateTime ADMIN_CRT_TMSTAMP) {
+        this.ADMIN_CRT_TMSTAMP = ADMIN_CRT_TMSTAMP;
+    }
+
+    public long getBL_GRP_NO() {
+        return BL_GRP_NO;
+    }
+
+    public void setBL_GRP_NO(long BL_GRP_NO) {
+        this.BL_GRP_NO = BL_GRP_NO;
+    }
+
+    public LocalDate getMTN_EFF_DT() {
+        return MTN_EFF_DT;
+    }
+
+    public void setMTN_EFF_DT(LocalDate MTN_EFF_DT) {
+        this.MTN_EFF_DT = MTN_EFF_DT;
+    }
+
+    // equals and hashCode methods
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,6 +139,7 @@ public class Record {
         return Objects.hash(CUST_ID_NO, ACCT_NO, NPA, NXX, TLN, BL_PROD_ID, DELETE_IND, ADMIN_CRT_TMSTAMP, BL_GRP_NO, MTN_EFF_DT);
     }
 
+    // toString method
     @Override
     public String toString() {
         return "Record{" +
