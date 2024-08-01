@@ -4,17 +4,21 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import java.util.Optional;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Record {
+
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH.mm.ss.SSSSSS");
 
     private String CUST_ID_NO;
     private long ACCT_NO;
@@ -23,33 +27,17 @@ public class Record {
     private String TLN;
     private long BL_PROD_ID;
     private String DELETE_IND;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
     private LocalDateTime ADMIN_CRT_TMSTAMP;
-
     private long BL_GRP_NO;
-
-    @DateTimeFormat(pattern = "MM/dd/yyyy")
     private LocalDate MTN_EFF_DT;
-
-    @DateTimeFormat(pattern = "MM/dd/yyyy")
     private LocalDate ADMIN_EFF_DT;
-
     private double ADMIN_CHG_AMT;
-
-    @DateTimeFormat(pattern = "MM/dd/yyyy")
     private LocalDate BL_PER_FROM_DT;
-
-    @DateTimeFormat(pattern = "MM/dd/yyyy")
     private LocalDate BL_PER_TO_DT;
-
     private String ADMIN_FEE_RSN_CD;
     private long DISCNT_OFFR_ID;
     private String VISION_USER_ID_CD;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
     private LocalDateTime ORIG_ADMIN_TMSTAMP;
-
     private long ORIG_INVOICE_NO;
     private String CUST_DISC_IND;
     private int CNTRCT_TERMS_ID;
@@ -60,10 +48,7 @@ public class Record {
     private String CHRG_CAT_CD;
     private String CSEQ_IND;
     private String DB_USERID;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
     private LocalDateTime DB_TMSTAMP;
-
     private String SOURCE_CLIENT_ID;
     private String ADMIN_CRT_METH_CD;
     private long EQ_ORD_NO;
@@ -71,7 +56,6 @@ public class Record {
     private long SVC_PROD_ID_DISCNT;
     private String BL_CYC_NO;
     private String CYC_MTH_YR;
-
     private double TAXABLE_MNY;
     private long TAX_PROD_ID;
     private String OTC_TYPE;
@@ -80,19 +64,98 @@ public class Record {
     private String VODA_COUNTRY_CD;
     private int DATA_RT_FTPRNT_NO;
     private String AUDIT_TRANS_ID;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
     private LocalDateTime ORIG_CREATE_TS;
-
     private int INSTALL_LOAN_NO;
     private String V2_USER_ID;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate V2_UPDATE_DTM;
-
     private String INSTALL_FIN_MARKET_ID;
     private int LOAN_TERM_MTH_QTY;
     private int TERM_BILLED_QTY;
+
+    // Setters with error handling
+    public void setBL_PER_FROM_DT(String dateStr) {
+        this.BL_PER_FROM_DT = parseLocalDate(dateStr, "BL_PER_FROM_DT");
+    }
+
+    public void setTAXABLE_MNY(String moneyStr) {
+        this.TAXABLE_MNY = parseDouble(moneyStr, "TAXABLE_MNY");
+    }
+
+    public void setORIG_CREATE_TS(String timestampStr) {
+        this.ORIG_CREATE_TS = parseLocalDateTime(timestampStr, "ORIG_CREATE_TS");
+    }
+
+    public void setADMIN_CRT_TMSTAMP(String timestampStr) {
+        this.ADMIN_CRT_TMSTAMP = parseLocalDateTime(timestampStr, "ADMIN_CRT_TMSTAMP");
+    }
+
+    public void setORIG_ADMIN_TMSTAMP(String timestampStr) {
+        this.ORIG_ADMIN_TMSTAMP = parseLocalDateTime(timestampStr, "ORIG_ADMIN_TMSTAMP");
+    }
+
+    public void setTAX_PROD_ID(String taxProdIdStr) {
+        this.TAX_PROD_ID = parseLong(taxProdIdStr, "TAX_PROD_ID");
+    }
+
+    public void setMTN_EFF_DT(String dateStr) {
+        this.MTN_EFF_DT = parseLocalDate(dateStr, "MTN_EFF_DT");
+    }
+
+    public void setDB_TMSTAMP(String timestampStr) {
+        this.DB_TMSTAMP = parseLocalDateTime(timestampStr, "DB_TMSTAMP");
+    }
+
+    public void setADMIN_EFF_DT(String dateStr) {
+        this.ADMIN_EFF_DT = parseLocalDate(dateStr, "ADMIN_EFF_DT");
+    }
+
+    public void setBL_PER_TO_DT(String dateStr) {
+        this.BL_PER_TO_DT = parseLocalDate(dateStr, "BL_PER_TO_DT");
+    }
+
+    private LocalDate parseLocalDate(String dateStr, String fieldName) {
+        try {
+            return Optional.ofNullable(dateStr).filter(str -> !str.isEmpty())
+                    .map(str -> LocalDate.parse(str, DATE_FORMATTER)).orElse(null);
+        } catch (Exception e) {
+            logParsingError(fieldName, dateStr);
+            return null;
+        }
+    }
+
+    private LocalDateTime parseLocalDateTime(String timestampStr, String fieldName) {
+        try {
+            return Optional.ofNullable(timestampStr).filter(str -> !str.isEmpty())
+                    .map(str -> LocalDateTime.parse(str, DATE_TIME_FORMATTER)).orElse(null);
+        } catch (Exception e) {
+            logParsingError(fieldName, timestampStr);
+            return null;
+        }
+    }
+
+    private Double parseDouble(String doubleStr, String fieldName) {
+        try {
+            return Optional.ofNullable(doubleStr).filter(str -> !str.isEmpty())
+                    .map(Double::parseDouble).orElse(null);
+        } catch (Exception e) {
+            logParsingError(fieldName, doubleStr);
+            return null;
+        }
+    }
+
+    private Long parseLong(String longStr, String fieldName) {
+        try {
+            return Optional.ofNullable(longStr).filter(str -> !str.isEmpty())
+                    .map(Long::parseLong).orElse(null);
+        } catch (Exception e) {
+            logParsingError(fieldName, longStr);
+            return null;
+        }
+    }
+
+    private void logParsingError(String fieldName, String value) {
+        System.err.println("Error parsing field " + fieldName + " with value: " + value);
+    }
 
     @Override
     public boolean equals(Object o) {
