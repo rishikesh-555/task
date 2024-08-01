@@ -30,9 +30,19 @@ public class BatchApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		jobLauncher.run(job, new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters());
-//		String sql = "Select * From my_table";
-//		List<Record> records = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Record.class));
-//		records.forEach(System.out :: println);
+		// Example usage
+		// jobLauncher.run(job, new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters());
+		String sql = "select * from table";
+		List<String[]> rawRecords = jdbc.Template.query(sql, (rs, rowNum) -> new String[]{
+				rs.getString("CUST_ID_NO"),
+				rs.getString("ACCT_NO"),
+				rs.getString("NPA"),
+				// other fields
+		});
+
+		rawRecords.forEach(rawRecord -> {
+			Record record = InputConverter.convertToRecord(rawRecord);
+			System.out.println(OutputConverter.convertRecordToString(record));
+		});
 	}
 }
