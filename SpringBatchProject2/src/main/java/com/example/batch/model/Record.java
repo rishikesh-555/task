@@ -72,84 +72,34 @@ public class Record {
     private int LOAN_TERM_MTH_QTY;
     private int TERM_BILLED_QTY;
 
-    // Setters with error handling
-    public void setBL_PER_FROM_DT(String dateStr) {
-        this.BL_PER_FROM_DT = parseLocalDate(dateStr, "BL_PER_FROM_DT");
-    }
-
+    // Setters with enhanced error handling
     public void setTAXABLE_MNY(String moneyStr) {
         this.TAXABLE_MNY = parseDouble(moneyStr, "TAXABLE_MNY");
-    }
-
-    public void setORIG_CREATE_TS(String timestampStr) {
-        this.ORIG_CREATE_TS = parseLocalDateTime(timestampStr, "ORIG_CREATE_TS");
-    }
-
-    public void setADMIN_CRT_TMSTAMP(String timestampStr) {
-        this.ADMIN_CRT_TMSTAMP = parseLocalDateTime(timestampStr, "ADMIN_CRT_TMSTAMP");
-    }
-
-    public void setORIG_ADMIN_TMSTAMP(String timestampStr) {
-        this.ORIG_ADMIN_TMSTAMP = parseLocalDateTime(timestampStr, "ORIG_ADMIN_TMSTAMP");
     }
 
     public void setTAX_PROD_ID(String taxProdIdStr) {
         this.TAX_PROD_ID = parseLong(taxProdIdStr, "TAX_PROD_ID");
     }
 
-    public void setMTN_EFF_DT(String dateStr) {
-        this.MTN_EFF_DT = parseLocalDate(dateStr, "MTN_EFF_DT");
-    }
-
-    public void setDB_TMSTAMP(String timestampStr) {
-        this.DB_TMSTAMP = parseLocalDateTime(timestampStr, "DB_TMSTAMP");
-    }
-
-    public void setADMIN_EFF_DT(String dateStr) {
-        this.ADMIN_EFF_DT = parseLocalDate(dateStr, "ADMIN_EFF_DT");
-    }
-
-    public void setBL_PER_TO_DT(String dateStr) {
-        this.BL_PER_TO_DT = parseLocalDate(dateStr, "BL_PER_TO_DT");
-    }
-
-    private LocalDate parseLocalDate(String dateStr, String fieldName) {
-        try {
-            return Optional.ofNullable(dateStr).filter(str -> !str.isEmpty())
-                    .map(str -> LocalDate.parse(str, DATE_FORMATTER)).orElse(null);
-        } catch (Exception e) {
-            logParsingError(fieldName, dateStr);
-            return null;
-        }
-    }
-
-    private LocalDateTime parseLocalDateTime(String timestampStr, String fieldName) {
-        try {
-            return Optional.ofNullable(timestampStr).filter(str -> !str.isEmpty())
-                    .map(str -> LocalDateTime.parse(str, DATE_TIME_FORMATTER)).orElse(null);
-        } catch (Exception e) {
-            logParsingError(fieldName, timestampStr);
-            return null;
-        }
-    }
-
     private Double parseDouble(String doubleStr, String fieldName) {
         try {
-            return Optional.ofNullable(doubleStr).filter(str -> !str.isEmpty())
-                    .map(Double::parseDouble).orElse(null);
+            // Treat empty strings as null
+            return Optional.ofNullable(doubleStr).filter(str -> !str.trim().isEmpty())
+                    .map(Double::parseDouble).orElse(0.0); // Default to 0.0 if empty
         } catch (Exception e) {
             logParsingError(fieldName, doubleStr);
-            return null;
+            return 0.0; // Default to 0.0 in case of parsing error
         }
     }
 
     private Long parseLong(String longStr, String fieldName) {
         try {
-            return Optional.ofNullable(longStr).filter(str -> !str.isEmpty())
-                    .map(Long::parseLong).orElse(null);
+            // Treat empty strings as null
+            return Optional.ofNullable(longStr).filter(str -> !str.trim().isEmpty())
+                    .map(Long::parseLong).orElse(0L); // Default to 0L if empty
         } catch (Exception e) {
             logParsingError(fieldName, longStr);
-            return null;
+            return 0L; // Default to 0L in case of parsing error
         }
     }
 
@@ -213,5 +163,10 @@ public class Record {
                 Objects.equals(V2_USER_ID, record.V2_USER_ID) &&
                 Objects.equals(V2_UPDATE_DTM, record.V2_UPDATE_DTM) &&
                 Objects.equals(INSTALL_FIN_MARKET_ID, record.INSTALL_FIN_MARKET_ID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(CUST_ID_NO, ACCT_NO, NPA, NXX, TLN, BL_PROD_ID, DELETE_IND, ADMIN_CRT_TMSTAMP, BL_GRP_NO, MTN_EFF_DT, ADMIN_EFF_DT, ADMIN_CHG_AMT, BL_PER_FROM_DT, BL_PER_TO_DT, ADMIN_FEE_RSN_CD, DISCNT_OFFR_ID, VISION_USER_ID_CD, ORIG_ADMIN_TMSTAMP, ORIG_INVOICE_NO, CUST_DISC_IND, CNTRCT_TERMS_ID, CREDIT_ADJ_CD, ADMIN_FEE_TYP, ADMIN_FEE_TYP_ID, ORIG_TBL_SUBSYS_CD, CHRG_CAT_CD, CSEQ_IND, DB_USERID, DB_TMSTAMP, SOURCE_CLIENT_ID, ADMIN_CRT_METH_CD, EQ_ORD_NO, NETACE_LOC_ID, SVC_PROD_ID_DISCNT, BL_CYC_NO, CYC_MTH_YR, TAXABLE_MNY, TAX_PROD_ID, OTC_TYPE, CHGBCK_SUBMISSION_ID, TAX_GEO_CODE, VODA_COUNTRY_CD, DATA_RT_FTPRNT_NO, AUDIT_TRANS_ID, ORIG_CREATE_TS, INSTALL_LOAN_NO, V2_USER_ID, V2_UPDATE_DTM, INSTALL_FIN_MARKET_ID, LOAN_TERM_MTH_QTY, TERM_BILLED_QTY);
     }
 }
