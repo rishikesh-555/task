@@ -181,17 +181,17 @@ public class Record {
                 ", TLN='" + TLN + '\'' +
                 ", BL_PROD_ID=" + BL_PROD_ID +
                 ", DELETE_IND='" + DELETE_IND + '\'' +
-                ", ADMIN_CRT_TMSTAMP=" + (ADMIN_CRT_TMSTAMP != null ? ADMIN_CRT_TMSTAMP.format(DATE_TIME_FORMATTER) : null) +
+                ", ADMIN_CRT_TMSTAMP=" + (ADMIN_CRT_TMSTAMP != null ? ADMIN_CRT_TMSTAMP.toString() : null) +
                 ", BL_GRP_NO=" + BL_GRP_NO +
-                ", MTN_EFF_DT=" + (MTN_EFF_DT != null ? MTN_EFF_DT.format(DATE_FORMATTER) : null) +
-                ", ADMIN_EFF_DT=" + (ADMIN_EFF_DT != null ? ADMIN_EFF_DT.format(DATE_FORMATTER) : null) +
+                ", MTN_EFF_DT=" + (MTN_EFF_DT != null ? MTN_EFF_DT.toString() : null) +
+                ", ADMIN_EFF_DT=" + (ADMIN_EFF_DT != null ? ADMIN_EFF_DT.toString() : null) +
                 ", ADMIN_CHG_AMT=" + ADMIN_CHG_AMT +
-                ", BL_PER_FROM_DT=" + (BL_PER_FROM_DT != null ? BL_PER_FROM_DT.format(DATE_FORMATTER) : null) +
-                ", BL_PER_TO_DT=" + (BL_PER_TO_DT != null ? BL_PER_TO_DT.format(DATE_FORMATTER) : null) +
+                ", BL_PER_FROM_DT=" + (BL_PER_FROM_DT != null ? BL_PER_FROM_DT.toString() : null) +
+                ", BL_PER_TO_DT=" + (BL_PER_TO_DT != null ? BL_PER_TO_DT.toString() : null) +
                 ", ADMIN_FEE_RSN_CD='" + ADMIN_FEE_RSN_CD + '\'' +
                 ", DISCNT_OFFR_ID=" + DISCNT_OFFR_ID +
                 ", VISION_USER_ID_CD='" + VISION_USER_ID_CD + '\'' +
-                ", ORIG_ADMIN_TMSTAMP=" + (ORIG_ADMIN_TMSTAMP != null ? ORIG_ADMIN_TMSTAMP.format(DATE_TIME_FORMATTER) : null) +
+                ", ORIG_ADMIN_TMSTAMP=" + (ORIG_ADMIN_TMSTAMP != null ? ORIG_ADMIN_TMSTAMP.toString() : null) +
                 ", ORIG_INVOICE_NO=" + ORIG_INVOICE_NO +
                 ", CUST_DISC_IND='" + CUST_DISC_IND + '\'' +
                 ", CNTRCT_TERMS_ID=" + CNTRCT_TERMS_ID +
@@ -202,7 +202,7 @@ public class Record {
                 ", CHRG_CAT_CD='" + CHRG_CAT_CD + '\'' +
                 ", CSEQ_IND='" + CSEQ_IND + '\'' +
                 ", DB_USERID='" + DB_USERID + '\'' +
-                ", DB_TMSTAMP=" + (DB_TMSTAMP != null ? DB_TMSTAMP.format(DATE_TIME_FORMATTER) : null) +
+                ", DB_TMSTAMP=" + (DB_TMSTAMP != null ? DB_TMSTAMP.toString() : null) +
                 ", SOURCE_CLIENT_ID='" + SOURCE_CLIENT_ID + '\'' +
                 ", ADMIN_CRT_METH_CD='" + ADMIN_CRT_METH_CD + '\'' +
                 ", EQ_ORD_NO=" + EQ_ORD_NO +
@@ -218,15 +218,17 @@ public class Record {
                 ", VODA_COUNTRY_CD='" + VODA_COUNTRY_CD + '\'' +
                 ", DATA_RT_FTPRNT_NO=" + DATA_RT_FTPRNT_NO +
                 ", AUDIT_TRANS_ID='" + AUDIT_TRANS_ID + '\'' +
-                ", ORIG_CREATE_TS=" + (ORIG_CREATE_TS != null ? ORIG_CREATE_TS.format(DATE_TIME_FORMATTER) : null) +
+                ", ORIG_CREATE_TS=" + (ORIG_CREATE_TS != null ? ORIG_CREATE_TS.toString() : null) +
                 ", INSTALL_LOAN_NO=" + INSTALL_LOAN_NO +
                 ", V2_USER_ID='" + V2_USER_ID + '\'' +
-                ", V2_UPDATE_DTM=" + (V2_UPDATE_DTM != null ? V2_UPDATE_DTM.format(DATE_FORMATTER) : null) +
+                ", V2_UPDATE_DTM=" + (V2_UPDATE_DTM != null ? V2_UPDATE_DTM.toString() : null) +
                 ", INSTALL_FIN_MARKET_ID='" + INSTALL_FIN_MARKET_ID + '\'' +
                 ", LOAN_TERM_MTH_QTY=" + LOAN_TERM_MTH_QTY +
                 ", TERM_BILLED_QTY=" + TERM_BILLED_QTY +
                 '}';
     }
+
+
 
 
 }
