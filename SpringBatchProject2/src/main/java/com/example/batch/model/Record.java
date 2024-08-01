@@ -196,6 +196,21 @@ public class Record {
         }
     }
 
+    // Helper methods for formatting dates
+    private String formatLocalDate(LocalDate date) {
+        if (date == null) {
+            return "null";
+        }
+        return date.format(DATE_FORMATTER);
+    }
+
+    private String formatLocalDateTime(LocalDateTime dateTime) {
+        if (dateTime == null) {
+            return "null";
+        }
+        return dateTime.format(DATE_TIME_FORMATTER);
+    }
+    
     @Override
     public String toString() {
         return "Record{" +
