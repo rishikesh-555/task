@@ -72,13 +72,65 @@ public class Record {
     private int LOAN_TERM_MTH_QTY;
     private int TERM_BILLED_QTY;
 
-    // Setters with enhanced error handling
+    // Setters with error handling
+    public void setBL_PER_FROM_DT(String dateStr) {
+        this.BL_PER_FROM_DT = parseLocalDate(dateStr, "BL_PER_FROM_DT");
+    }
+
     public void setTAXABLE_MNY(String moneyStr) {
         this.TAXABLE_MNY = parseDouble(moneyStr, "TAXABLE_MNY");
     }
 
+    public void setORIG_CREATE_TS(String timestampStr) {
+        this.ORIG_CREATE_TS = parseLocalDateTime(timestampStr, "ORIG_CREATE_TS");
+    }
+
+    public void setADMIN_CRT_TMSTAMP(String timestampStr) {
+        this.ADMIN_CRT_TMSTAMP = parseLocalDateTime(timestampStr, "ADMIN_CRT_TMSTAMP");
+    }
+
+    public void setORIG_ADMIN_TMSTAMP(String timestampStr) {
+        this.ORIG_ADMIN_TMSTAMP = parseLocalDateTime(timestampStr, "ORIG_ADMIN_TMSTAMP");
+    }
+
     public void setTAX_PROD_ID(String taxProdIdStr) {
         this.TAX_PROD_ID = parseLong(taxProdIdStr, "TAX_PROD_ID");
+    }
+
+    public void setMTN_EFF_DT(String dateStr) {
+        this.MTN_EFF_DT = parseLocalDate(dateStr, "MTN_EFF_DT");
+    }
+
+    public void setDB_TMSTAMP(String timestampStr) {
+        this.DB_TMSTAMP = parseLocalDateTime(timestampStr, "DB_TMSTAMP");
+    }
+
+    public void setADMIN_EFF_DT(String dateStr) {
+        this.ADMIN_EFF_DT = parseLocalDate(dateStr, "ADMIN_EFF_DT");
+    }
+
+    public void setBL_PER_TO_DT(String dateStr) {
+        this.BL_PER_TO_DT = parseLocalDate(dateStr, "BL_PER_TO_DT");
+    }
+
+    private LocalDate parseLocalDate(String dateStr, String fieldName) {
+        try {
+            return Optional.ofNullable(dateStr).filter(str -> !str.isEmpty())
+                    .map(str -> LocalDate.parse(str, DATE_FORMATTER)).orElse(null);
+        } catch (Exception e) {
+            logParsingError(fieldName, dateStr);
+            return null;
+        }
+    }
+
+    private LocalDateTime parseLocalDateTime(String timestampStr, String fieldName) {
+        try {
+            return Optional.ofNullable(timestampStr).filter(str -> !str.isEmpty())
+                    .map(str -> LocalDateTime.parse(str, DATE_TIME_FORMATTER)).orElse(null);
+        } catch (Exception e) {
+            logParsingError(fieldName, timestampStr);
+            return null;
+        }
     }
 
     private Double parseDouble(String doubleStr, String fieldName) {
@@ -105,6 +157,100 @@ public class Record {
 
     private void logParsingError(String fieldName, String value) {
         System.err.println("Error parsing field " + fieldName + " with value: " + value);
+    }
+
+    // Custom converters
+    public static class LocalDateToStringConverter {
+        private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
+        public static String convert(LocalDate date) {
+            if (date == null) {
+                return null;
+            }
+            return date.format(DATE_FORMATTER);
+        }
+
+        public static LocalDate convertToLocalDate(String dateStr) {
+            if (dateStr == null || dateStr.isEmpty()) {
+                return null;
+            }
+            return LocalDate.parse(dateStr, DATE_FORMATTER);
+        }
+    }
+
+    public static class LocalDateTimeToStringConverter {
+        private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        public static String convert(LocalDateTime dateTime) {
+            if (dateTime == null) {
+                return null;
+            }
+            return dateTime.format(DATE_TIME_FORMATTER);
+        }
+
+        public static LocalDateTime convertToLocalDateTime(String dateTimeStr) {
+            if (dateTimeStr == null || dateTimeStr.isEmpty()) {
+                return null;
+            }
+            return LocalDateTime.parse(dateTimeStr, DATE_TIME_FORMATTER);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Record{" +
+                "CUST_ID_NO='" + CUST_ID_NO + '\'' +
+                ", ACCT_NO=" + ACCT_NO +
+                ", NPA='" + NPA + '\'' +
+                ", NXX='" + NXX + '\'' +
+                ", TLN='" + TLN + '\'' +
+                ", BL_PROD_ID=" + BL_PROD_ID +
+                ", DELETE_IND='" + DELETE_IND + '\'' +
+                ", ADMIN_CRT_TMSTAMP=" + LocalDateTimeToStringConverter.convert(ADMIN_CRT_TMSTAMP) +
+                ", BL_GRP_NO=" + BL_GRP_NO +
+                ", MTN_EFF_DT=" + LocalDateToStringConverter.convert(MTN_EFF_DT) +
+                ", ADMIN_EFF_DT=" + LocalDateToStringConverter.convert(ADMIN_EFF_DT) +
+                ", ADMIN_CHG_AMT=" + ADMIN_CHG_AMT +
+                ", BL_PER_FROM_DT=" + LocalDateToStringConverter.convert(BL_PER_FROM_DT) +
+                ", BL_PER_TO_DT=" + LocalDateToStringConverter.convert(BL_PER_TO_DT) +
+                ", ADMIN_FEE_RSN_CD='" + ADMIN_FEE_RSN_CD + '\'' +
+                ", DISCNT_OFFR_ID=" + DISCNT_OFFR_ID +
+                ", VISION_USER_ID_CD='" + VISION_USER_ID_CD + '\'' +
+                ", ORIG_ADMIN_TMSTAMP=" + LocalDateTimeToStringConverter.convert(ORIG_ADMIN_TMSTAMP) +
+                ", ORIG_INVOICE_NO=" + ORIG_INVOICE_NO +
+                ", CUST_DISC_IND='" + CUST_DISC_IND + '\'' +
+                ", CNTRCT_TERMS_ID=" + CNTRCT_TERMS_ID +
+                ", CREDIT_ADJ_CD='" + CREDIT_ADJ_CD + '\'' +
+                ", ADMIN_FEE_TYP='" + ADMIN_FEE_TYP + '\'' +
+                ", ADMIN_FEE_TYP_ID=" + ADMIN_FEE_TYP_ID +
+                ", ORIG_TBL_SUBSYS_CD='" + ORIG_TBL_SUBSYS_CD + '\'' +
+                ", CHRG_CAT_CD='" + CHRG_CAT_CD + '\'' +
+                ", CSEQ_IND='" + CSEQ_IND + '\'' +
+                ", DB_USERID='" + DB_USERID + '\'' +
+                ", DB_TMSTAMP=" + LocalDateTimeToStringConverter.convert(DB_TMSTAMP) +
+                ", SOURCE_CLIENT_ID='" + SOURCE_CLIENT_ID + '\'' +
+                ", ADMIN_CRT_METH_CD='" + ADMIN_CRT_METH_CD + '\'' +
+                ", EQ_ORD_NO=" + EQ_ORD_NO +
+                ", NETACE_LOC_ID='" + NETACE_LOC_ID + '\'' +
+                ", SVC_PROD_ID_DISCNT=" + SVC_PROD_ID_DISCNT +
+                ", BL_CYC_NO='" + BL_CYC_NO + '\'' +
+                ", CYC_MTH_YR='" + CYC_MTH_YR + '\'' +
+                ", TAXABLE_MNY=" + TAXABLE_MNY +
+                ", TAX_PROD_ID=" + TAX_PROD_ID +
+                ", OTC_TYPE='" + OTC_TYPE + '\'' +
+                ", CHGBCK_SUBMISSION_ID='" + CHGBCK_SUBMISSION_ID + '\'' +
+                ", TAX_GEO_CODE='" + TAX_GEO_CODE + '\'' +
+                ", VODA_COUNTRY_CD='" + VODA_COUNTRY_CD + '\'' +
+                ", DATA_RT_FTPRNT_NO=" + DATA_RT_FTPRNT_NO +
+                ", AUDIT_TRANS_ID='" + AUDIT_TRANS_ID + '\'' +
+                ", ORIG_CREATE_TS=" + LocalDateTimeToStringConverter.convert(ORIG_CREATE_TS) +
+                ", INSTALL_LOAN_NO=" + INSTALL_LOAN_NO +
+                ", V2_USER_ID='" + V2_USER_ID + '\'' +
+                ", V2_UPDATE_DTM=" + LocalDateToStringConverter.convert(V2_UPDATE_DTM) +
+                ", INSTALL_FIN_MARKET_ID='" + INSTALL_FIN_MARKET_ID + '\'' +
+                ", LOAN_TERM_MTH_QTY=" + LOAN_TERM_MTH_QTY +
+                ", TERM_BILLED_QTY=" + TERM_BILLED_QTY +
+                '}';
     }
 
     @Override
@@ -164,71 +310,4 @@ public class Record {
                 Objects.equals(V2_UPDATE_DTM, record.V2_UPDATE_DTM) &&
                 Objects.equals(INSTALL_FIN_MARKET_ID, record.INSTALL_FIN_MARKET_ID);
     }
-
-    
-    @Override
-    public int hashCode() {
-        return Objects.hash(CUST_ID_NO, ACCT_NO, NPA, NXX, TLN, BL_PROD_ID, DELETE_IND, ADMIN_CRT_TMSTAMP, BL_GRP_NO, MTN_EFF_DT, ADMIN_EFF_DT, ADMIN_CHG_AMT, BL_PER_FROM_DT, BL_PER_TO_DT, ADMIN_FEE_RSN_CD, DISCNT_OFFR_ID, VISION_USER_ID_CD, ORIG_ADMIN_TMSTAMP, ORIG_INVOICE_NO, CUST_DISC_IND, CNTRCT_TERMS_ID, CREDIT_ADJ_CD, ADMIN_FEE_TYP, ADMIN_FEE_TYP_ID, ORIG_TBL_SUBSYS_CD, CHRG_CAT_CD, CSEQ_IND, DB_USERID, DB_TMSTAMP, SOURCE_CLIENT_ID, ADMIN_CRT_METH_CD, EQ_ORD_NO, NETACE_LOC_ID, SVC_PROD_ID_DISCNT, BL_CYC_NO, CYC_MTH_YR, TAXABLE_MNY, TAX_PROD_ID, OTC_TYPE, CHGBCK_SUBMISSION_ID, TAX_GEO_CODE, VODA_COUNTRY_CD, DATA_RT_FTPRNT_NO, AUDIT_TRANS_ID, ORIG_CREATE_TS, INSTALL_LOAN_NO, V2_USER_ID, V2_UPDATE_DTM, INSTALL_FIN_MARKET_ID, LOAN_TERM_MTH_QTY, TERM_BILLED_QTY);
-    }
-    
-    @Override
-    public String toString() {
-        return "Record{" +
-                "CUST_ID_NO='" + CUST_ID_NO + '\'' +
-                ", ACCT_NO=" + ACCT_NO +
-                ", NPA='" + NPA + '\'' +
-                ", NXX='" + NXX + '\'' +
-                ", TLN='" + TLN + '\'' +
-                ", BL_PROD_ID=" + BL_PROD_ID +
-                ", DELETE_IND='" + DELETE_IND + '\'' +
-                ", ADMIN_CRT_TMSTAMP=" + (ADMIN_CRT_TMSTAMP != null ? ADMIN_CRT_TMSTAMP.toString() : null) +
-                ", BL_GRP_NO=" + BL_GRP_NO +
-                ", MTN_EFF_DT=" + (MTN_EFF_DT != null ? MTN_EFF_DT.toString() : null) +
-                ", ADMIN_EFF_DT=" + (ADMIN_EFF_DT != null ? ADMIN_EFF_DT.toString() : null) +
-                ", ADMIN_CHG_AMT=" + ADMIN_CHG_AMT +
-                ", BL_PER_FROM_DT=" + (BL_PER_FROM_DT != null ? BL_PER_FROM_DT.toString() : null) +
-                ", BL_PER_TO_DT=" + (BL_PER_TO_DT != null ? BL_PER_TO_DT.toString() : null) +
-                ", ADMIN_FEE_RSN_CD='" + ADMIN_FEE_RSN_CD + '\'' +
-                ", DISCNT_OFFR_ID=" + DISCNT_OFFR_ID +
-                ", VISION_USER_ID_CD='" + VISION_USER_ID_CD + '\'' +
-                ", ORIG_ADMIN_TMSTAMP=" + (ORIG_ADMIN_TMSTAMP != null ? ORIG_ADMIN_TMSTAMP.toString() : null) +
-                ", ORIG_INVOICE_NO=" + ORIG_INVOICE_NO +
-                ", CUST_DISC_IND='" + CUST_DISC_IND + '\'' +
-                ", CNTRCT_TERMS_ID=" + CNTRCT_TERMS_ID +
-                ", CREDIT_ADJ_CD='" + CREDIT_ADJ_CD + '\'' +
-                ", ADMIN_FEE_TYP='" + ADMIN_FEE_TYP + '\'' +
-                ", ADMIN_FEE_TYP_ID=" + ADMIN_FEE_TYP_ID +
-                ", ORIG_TBL_SUBSYS_CD='" + ORIG_TBL_SUBSYS_CD + '\'' +
-                ", CHRG_CAT_CD='" + CHRG_CAT_CD + '\'' +
-                ", CSEQ_IND='" + CSEQ_IND + '\'' +
-                ", DB_USERID='" + DB_USERID + '\'' +
-                ", DB_TMSTAMP=" + (DB_TMSTAMP != null ? DB_TMSTAMP.toString() : null) +
-                ", SOURCE_CLIENT_ID='" + SOURCE_CLIENT_ID + '\'' +
-                ", ADMIN_CRT_METH_CD='" + ADMIN_CRT_METH_CD + '\'' +
-                ", EQ_ORD_NO=" + EQ_ORD_NO +
-                ", NETACE_LOC_ID='" + NETACE_LOC_ID + '\'' +
-                ", SVC_PROD_ID_DISCNT=" + SVC_PROD_ID_DISCNT +
-                ", BL_CYC_NO='" + BL_CYC_NO + '\'' +
-                ", CYC_MTH_YR='" + CYC_MTH_YR + '\'' +
-                ", TAXABLE_MNY=" + TAXABLE_MNY +
-                ", TAX_PROD_ID=" + TAX_PROD_ID +
-                ", OTC_TYPE='" + OTC_TYPE + '\'' +
-                ", CHGBCK_SUBMISSION_ID='" + CHGBCK_SUBMISSION_ID + '\'' +
-                ", TAX_GEO_CODE='" + TAX_GEO_CODE + '\'' +
-                ", VODA_COUNTRY_CD='" + VODA_COUNTRY_CD + '\'' +
-                ", DATA_RT_FTPRNT_NO=" + DATA_RT_FTPRNT_NO +
-                ", AUDIT_TRANS_ID='" + AUDIT_TRANS_ID + '\'' +
-                ", ORIG_CREATE_TS=" + (ORIG_CREATE_TS != null ? ORIG_CREATE_TS.toString() : null) +
-                ", INSTALL_LOAN_NO=" + INSTALL_LOAN_NO +
-                ", V2_USER_ID='" + V2_USER_ID + '\'' +
-                ", V2_UPDATE_DTM=" + (V2_UPDATE_DTM != null ? V2_UPDATE_DTM.toString() : null) +
-                ", INSTALL_FIN_MARKET_ID='" + INSTALL_FIN_MARKET_ID + '\'' +
-                ", LOAN_TERM_MTH_QTY=" + LOAN_TERM_MTH_QTY +
-                ", TERM_BILLED_QTY=" + TERM_BILLED_QTY +
-                '}';
-    }
-
-
-
-
 }
