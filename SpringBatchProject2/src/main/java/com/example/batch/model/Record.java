@@ -165,8 +165,67 @@ public class Record {
                 Objects.equals(INSTALL_FIN_MARKET_ID, record.INSTALL_FIN_MARKET_ID);
     }
 
+    
     @Override
     public int hashCode() {
         return Objects.hash(CUST_ID_NO, ACCT_NO, NPA, NXX, TLN, BL_PROD_ID, DELETE_IND, ADMIN_CRT_TMSTAMP, BL_GRP_NO, MTN_EFF_DT, ADMIN_EFF_DT, ADMIN_CHG_AMT, BL_PER_FROM_DT, BL_PER_TO_DT, ADMIN_FEE_RSN_CD, DISCNT_OFFR_ID, VISION_USER_ID_CD, ORIG_ADMIN_TMSTAMP, ORIG_INVOICE_NO, CUST_DISC_IND, CNTRCT_TERMS_ID, CREDIT_ADJ_CD, ADMIN_FEE_TYP, ADMIN_FEE_TYP_ID, ORIG_TBL_SUBSYS_CD, CHRG_CAT_CD, CSEQ_IND, DB_USERID, DB_TMSTAMP, SOURCE_CLIENT_ID, ADMIN_CRT_METH_CD, EQ_ORD_NO, NETACE_LOC_ID, SVC_PROD_ID_DISCNT, BL_CYC_NO, CYC_MTH_YR, TAXABLE_MNY, TAX_PROD_ID, OTC_TYPE, CHGBCK_SUBMISSION_ID, TAX_GEO_CODE, VODA_COUNTRY_CD, DATA_RT_FTPRNT_NO, AUDIT_TRANS_ID, ORIG_CREATE_TS, INSTALL_LOAN_NO, V2_USER_ID, V2_UPDATE_DTM, INSTALL_FIN_MARKET_ID, LOAN_TERM_MTH_QTY, TERM_BILLED_QTY);
     }
+    
+    @Override
+    public String toString() {
+        return "MyRecord{" +
+                "CUST_ID_NO='" + CUST_ID_NO + '\'' +
+                ", ACCT_NO=" + ACCT_NO +
+                ", NPA='" + NPA + '\'' +
+                ", NXX='" + NXX + '\'' +
+                ", TLN='" + TLN + '\'' +
+                ", BL_PROD_ID=" + BL_PROD_ID +
+                ", DELETE_IND='" + DELETE_IND + '\'' +
+                ", ADMIN_CRT_TMSTAMP=" + ADMIN_CRT_TMSTAMP +
+                ", BL_GRP_NO=" + BL_GRP_NO +
+                ", MTN_EFF_DT=" + MTN_EFF_DT +
+                ", ADMIN_EFF_DT=" + ADMIN_EFF_DT +
+                ", ADMIN_CHG_AMT=" + ADMIN_CHG_AMT +
+                ", BL_PER_FROM_DT=" + BL_PER_FROM_DT +
+                ", BL_PER_TO_DT=" + BL_PER_TO_DT +
+                ", ADMIN_FEE_RSN_CD='" + ADMIN_FEE_RSN_CD + '\'' +
+                ", DISCNT_OFFR_ID=" + DISCNT_OFFR_ID +
+                ", VISION_USER_ID_CD='" + VISION_USER_ID_CD + '\'' +
+                ", ORIG_ADMIN_TMSTAMP=" + ORIG_ADMIN_TMSTAMP +
+                ", ORIG_INVOICE_NO=" + ORIG_INVOICE_NO +
+                ", CUST_DISC_IND='" + CUST_DISC_IND + '\'' +
+                ", CNTRCT_TERMS_ID=" + CNTRCT_TERMS_ID +
+                ", CREDIT_ADJ_CD='" + CREDIT_ADJ_CD + '\'' +
+                ", ADMIN_FEE_TYP='" + ADMIN_FEE_TYP + '\'' +
+                ", ADMIN_FEE_TYP_ID=" + ADMIN_FEE_TYP_ID +
+                ", ORIG_TBL_SUBSYS_CD='" + ORIG_TBL_SUBSYS_CD + '\'' +
+                ", CHRG_CAT_CD='" + CHRG_CAT_CD + '\'' +
+                ", CSEQ_IND='" + CSEQ_IND + '\'' +
+                ", DB_USERID='" + DB_USERID + '\'' +
+                ", DB_TMSTAMP=" + DB_TMSTAMP +
+                ", SOURCE_CLIENT_ID='" + SOURCE_CLIENT_ID + '\'' +
+                ", ADMIN_CRT_METH_CD='" + ADMIN_CRT_METH_CD + '\'' +
+                ", EQ_ORD_NO=" + EQ_ORD_NO +
+                ", NETACE_LOC_ID='" + NETACE_LOC_ID + '\'' +
+                ", SVC_PROD_ID_DISCNT=" + SVC_PROD_ID_DISCNT +
+                ", BL_CYC_NO='" + BL_CYC_NO + '\'' +
+                ", CYC_MTH_YR='" + CYC_MTH_YR + '\'' +
+                ", TAXABLE_MNY=" + TAXABLE_MNY +
+                ", TAX_PROD_ID=" + TAX_PROD_ID +
+                ", OTC_TYPE='" + OTC_TYPE + '\'' +
+                ", CHGBCK_SUBMISSION_ID='" + CHGBCK_SUBMISSION_ID + '\'' +
+                ", TAX_GEO_CODE='" + TAX_GEO_CODE + '\'' +
+                ", VODA_COUNTRY_CD='" + VODA_COUNTRY_CD + '\'' +
+                ", DATA_RT_FTPRNT_NO=" + DATA_RT_FTPRNT_NO +
+                ", AUDIT_TRANS_ID='" + AUDIT_TRANS_ID + '\'' +
+                ", ORIG_CREATE_TS=" + ORIG_CREATE_TS +
+                ", INSTALL_LOAN_NO=" + INSTALL_LOAN_NO +
+                ", V2_USER_ID='" + V2_USER_ID + '\'' +
+                ", V2_UPDATE_DTM=" + V2_UPDATE_DTM +
+                ", INSTALL_FIN_MARKET_ID='" + INSTALL_FIN_MARKET_ID + '\'' +
+                ", LOAN_TERM_MTH_QTY=" + LOAN_TERM_MTH_QTY +
+                ", TERM_BILLED_QTY=" + TERM_BILLED_QTY +
+                '}';
+    }
+
 }
