@@ -6,7 +6,6 @@ import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
-import org.springframework.batch.item.file.transform.DefaultFieldSet;
 import org.springframework.batch.item.file.transform.FieldSet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +14,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindException;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,20 +33,31 @@ public class CsvRecordReader {
                 .fieldSetMapper(new BeanWrapperFieldSetMapper<CsvRecord>() {
                     @Override
                     public CsvRecord mapFieldSet(FieldSet fieldSet) throws BindException {
-                        FieldSet modifiedFieldSet = handleEmptyStrings(fieldSet);
-                        CsvRecord record = super.mapFieldSet(modifiedFieldSet);
+                        CsvRecord record = super.mapFieldSet(fieldSet);
+                        convertEmptyToNull(record);
                         return record;
                     }
 
-                    private FieldSet handleEmptyStrings(FieldSet fieldSet) {
-                        String[] values = fieldSet.getValues();
-                        String[] names = fieldSet.getNames();
-                        for (int i = 0; i < values.length; i++) {
-                            if (values[i].trim().isEmpty()) {
-                                values[i] = null;
+                    private void convertEmptyToNull(CsvRecord record) {
+                        Field[] fields = CsvRecord.class.getDeclaredFields();
+                        for (Field field : fields) {
+                            field.setAccessible(true);
+                            try {
+                                Object value = field.get(record);
+                                if (value instanceof String) {
+                                    String strValue = (String) value;
+                                    if (strValue != null && strValue.trim().isEmpty()) {
+                                        field.set(record, null);
+                                    }
+                                } else if (value instanceof Long && (Long) value == 0) {
+                                    field.set(record, null);
+                                } else if (value instanceof Double && (Double) value == 0.0) {
+                                    field.set(record, null);
+                                }
+                            } catch (IllegalAccessException e) {
+                                throw new RuntimeException(e);
                             }
                         }
-                        return new DefaultFieldSet(values, names);
                     }
                 })
                 .build();
