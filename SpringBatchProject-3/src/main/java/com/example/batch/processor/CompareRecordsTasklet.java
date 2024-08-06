@@ -2,18 +2,21 @@ package com.example.springbatchcompare.processor;
 
 import com.example.springbatchcompare.model.CsvRecord;
 import com.example.springbatchcompare.model.Record;
-import com.example.springbatchcompare.reader.CsvRecordReader;
-import com.example.springbatchcompare.reader.DatabaseRecordReader;
 import com.example.springbatchcompare.writer.RecordWriter;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.item.file.FlatFileItemReader;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,24 +28,21 @@ import java.util.Objects;
 public class CompareRecordsTasklet implements Tasklet {
 
     @Autowired
-    private CsvRecordReader csvRecordReader;
+    private DataSource dataSource;
 
     @Autowired
-    private DatabaseRecordReader databaseRecordReader;
+    private Resource inputCsv;
 
     @Autowired
     private RecordWriter recordWriter;
 
     @Autowired
-    private FlatFileItemReader<CsvRecord> csvRecordItemReader;
-
-    @Autowired
-    private JdbcCursorItemReader<Record> databaseRecordItemReader;
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-        List<CsvRecord> csvRecords = csvRecordReader.readAll(csvRecordItemReader);
-        List<Record> dbRecords = databaseRecordReader.readAll(databaseRecordItemReader);
+        List<CsvRecord> csvRecords = readCsvRecords();
+        List<Record> dbRecords = readDbRecords();
 
         for (CsvRecord csvRecord : csvRecords) {
             Record dbRecord = findMatchingRecord(dbRecords, csvRecord);
@@ -61,6 +61,72 @@ public class CompareRecordsTasklet implements Tasklet {
         recordWriter.printCategorizedRecords();
 
         return RepeatStatus.FINISHED;
+    }
+
+    private List<CsvRecord> readCsvRecords() {
+        // Implement logic to read CSV records using FlatFileItemReader or any other method
+        // Ensure to convert empty strings to null values appropriately
+        return null; // Replace with actual implementation
+    }
+
+    private List<Record> readDbRecords() {
+        String sql = "SELECT * FROM YOUR_TABLE WHERE otc_seq IS NOT NULL";
+        return jdbcTemplate.query(sql, new RowMapper<Record>() {
+            @Override
+            public Record mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Record record = new Record();
+                record.setCUST_ID_NO(rs.getString("CUST_ID_NO"));
+                record.setACCT_NO(rs.getLong("ACCT_NO"));
+                record.setNPA(rs.getString("NPA"));
+                record.setNXX(rs.getString("NXX"));
+                record.setTLN(rs.getString("TLN"));
+                record.setBL_PROD_ID(rs.getLong("BL_PROD_ID"));
+                record.setDELETE_IND(rs.getString("DELETE_IND"));
+                record.setADMIN_CRT_TMSTAMP(rs.getTimestamp("ADMIN_CRT_TMSTAMP"));
+                record.setBL_GRP_NO(rs.getLong("BL_GRP_NO"));
+                record.setMTN_EFF_DT(rs.getDate("MTN_EFF_DT"));
+                record.setADMIN_EFF_DT(rs.getDate("ADMIN_EFF_DT"));
+                record.setADMIN_CHG_AMT(rs.getDouble("ADMIN_CHG_AMT"));
+                record.setBL_PER_FROM_DT(rs.getDate("BL_PER_FROM_DT"));
+                record.setBL_PER_TO_DT(rs.getDate("BL_PER_TO_DT"));
+                record.setADMIN_FEE_RSN_CD(rs.getString("ADMIN_FEE_RSN_CD"));
+                record.setDISCNT_OFFR_ID(rs.getLong("DISCNT_OFFR_ID"));
+                record.setVISION_USER_ID_CD(rs.getString("VISION_USER_ID_CD"));
+                record.setORIG_ADMIN_TMSTAMP(rs.getTimestamp("ORIG_ADMIN_TMSTAMP"));
+                record.setORIG_INVOICE_NO(rs.getLong("ORIG_INVOICE_NO"));
+                record.setCUST_DISC_IND(rs.getString("CUST_DISC_IND"));
+                record.setCNTRCT_TERMS_ID(rs.getInt("CNTRCT_TERMS_ID"));
+                record.setCREDIT_ADJ_CD(rs.getString("CREDIT_ADJ_CD"));
+                record.setADMIN_FEE_TYP(rs.getString("ADMIN_FEE_TYP"));
+                record.setADMIN_FEE_TYP_ID(rs.getLong("ADMIN_FEE_TYP_ID"));
+                record.setORIG_TBL_SUBSYS_CD(rs.getString("ORIG_TBL_SUBSYS_CD"));
+                record.setCHRG_CAT_CD(rs.getString("CHRG_CAT_CD"));
+                record.setCSEQ_IND(rs.getString("CSEQ_IND"));
+                record.setDB_USERID(rs.getString("DB_USERID"));
+                record.setDB_TMSTAMP(rs.getTimestamp("DB_TMSTAMP"));
+                record.setSOURCE_CLIENT_ID(rs.getString("SOURCE_CLIENT_ID"));
+                record.setADMIN_CRT_METH_CD(rs.getString("ADMIN_CRT_METH_CD"));
+                record.setEQ_ORD_NO(rs.getLong("EQ_ORD_NO"));
+                record.setNETACE_LOC_ID(rs.getString("NETACE_LOC_ID"));
+                record.setSVC_PROD_ID_DISCNT(rs.getLong("SVC_PROD_ID_DISCNT"));
+                record.setBL_CYC_NO(rs.getString("BL_CYC_NO"));
+                record.setCYC_MTH_YR(rs.getString("CYC_MTH_YR"));
+                record.setTAXABLE_MNY(rs.getDouble("TAXABLE_MNY"));
+                record.setTAX_PROD_ID(rs.getLong("TAX_PROD_ID"));
+                record.setOTC_TYPE(rs.getString("OTC_TYPE"));
+                record.setCHGBCK_SUBMISSION_ID(rs.getString("CHGBCK_SUBMISSION_ID"));
+                record.setTAX_GEO_CODE(rs.getString("TAX_GEO_CODE"));
+                record.setDATA_RT_FTPRNT_NO(rs.getLong("DATA_RT_FTPRNT_NO"));
+                record.setVODA_COUNTRY_CD(rs.getString("VODA_COUNTRY_CD"));
+                record.setAUDIT_TRANS_ID(rs.getString("AUDIT_TRANS_ID"));
+                record.setORIG_CREATE_TS(rs.getTimestamp("ORIG_CREATE_TS"));
+                record.setINSTALL_LOAN_NO(rs.getLong("INSTALL_LOAN_NO"));
+                record.setINSTALL_FIN_MARKET_ID(rs.getString("INSTALL_FIN_MARKET_ID"));
+                record.setLOAN_TERM_MTH_QTY(rs.getInt("LOAN_TERM_MTH_QTY"));
+                record.setTERM_BILLED_QTY(rs.getInt("TERM_BILLED_QTY"));
+                return record;
+            }
+        });
     }
 
     private Record findMatchingRecord(List<Record> dbRecords, CsvRecord csvRecord) {
