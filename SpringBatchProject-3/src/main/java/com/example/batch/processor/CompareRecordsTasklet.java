@@ -14,6 +14,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -141,7 +142,7 @@ public class CompareRecordsTasklet implements Tasklet {
         return false;
     }
 
-    private boolean compareTimestamp(String dbTimestamp, String csvTimestamp) throws ParseException {
+    private boolean compareTimestamp(Timestamp dbTimestamp, String csvTimestamp) throws ParseException {
         if (dbTimestamp == null && (csvTimestamp == null || csvTimestamp.trim().isEmpty())) {
             return true;
         } else if (dbTimestamp != null && csvTimestamp != null && !csvTimestamp.trim().isEmpty()) {
@@ -161,14 +162,12 @@ public class CompareRecordsTasklet implements Tasklet {
         return outputFormat.format(date);
     }
 
-    private String convertDbToTimestamp(String timestampStr) throws ParseException {
-        if (timestampStr == null || timestampStr.trim().isEmpty()) {
+    private String convertDbToTimestamp(Timestamp timestamp) {
+        if (timestamp == null) {
             return null;
         }
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
-        Date date = inputFormat.parse(timestampStr);
         SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
-        return outputFormat.format(date);
+        return outputFormat.format(timestamp);
     }
 
     // Date Conversions
