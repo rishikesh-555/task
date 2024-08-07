@@ -133,11 +133,11 @@ public class CompareRecordsTasklet implements Tasklet {
         return Objects.equals(csvValue, dbValue);
     }
 
-    private boolean compareDate(String dbDate, String csvDate) throws ParseException {
+    private boolean compareDate(Date dbDate, String csvDate) throws ParseException {
         if (dbDate == null && (csvDate == null || csvDate.trim().isEmpty())) {
             return true;
         } else if (dbDate != null && csvDate != null && !csvDate.trim().isEmpty()) {
-            return convertDbToDate(dbDate).equals(convertCsvToDate(csvDate));
+            return dbDate.equals(convertCsvToDate(csvDate));
         }
         return false;
     }
@@ -146,28 +146,19 @@ public class CompareRecordsTasklet implements Tasklet {
         if (dbTimestamp == null && (csvTimestamp == null || csvTimestamp.trim().isEmpty())) {
             return true;
         } else if (dbTimestamp != null && csvTimestamp != null && !csvTimestamp.trim().isEmpty()) {
-            return convertDbToTimestamp(dbTimestamp).equals(convertCsvToTimestamp(csvTimestamp));
+            return dbTimestamp.equals(convertCsvToTimestamp(csvTimestamp));
         }
         return false;
     }
 
     // Timestamp Conversions
-    private String convertCsvToTimestamp(String timestampStr) throws ParseException {
+    private Timestamp convertCsvToTimestamp(String timestampStr) throws ParseException {
         if (timestampStr == null || timestampStr.trim().isEmpty()) {
             return null;
         }
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss.SSSSSS");
         Date date = inputFormat.parse(timestampStr);
-        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
-        return outputFormat.format(date);
-    }
-
-    private String convertDbToTimestamp(Timestamp timestamp) {
-        if (timestamp == null) {
-            return null;
-        }
-        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
-        return outputFormat.format(timestamp);
+        return new Timestamp(date.getTime());
     }
 
     // Date Conversions
@@ -177,13 +168,5 @@ public class CompareRecordsTasklet implements Tasklet {
         }
         SimpleDateFormat csvDateFormat = new SimpleDateFormat("MM/dd/yyyy");
         return csvDateFormat.parse(dateStr);
-    }
-
-    private Date convertDbToDate(String dateStr) throws ParseException {
-        if (dateStr == null || dateStr.trim().isEmpty()) {
-            return null;
-        }
-        SimpleDateFormat dbDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        return dbDateFormat.parse(dateStr);
     }
 }
