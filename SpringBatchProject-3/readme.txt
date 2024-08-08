@@ -1,4 +1,4 @@
-1)application.properties
+0) Applications.properties
 
 # Database connection properties
 spring.datasource.url=jdbc:oracle:thin:@your_database_url:1521:your_sid
@@ -9,204 +9,39 @@ spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
 # Spring Batch properties
 spring.batch.initialize-schema=always
 
-# Directories
-input.directory.path=C:/Users/RISHIKESH/Downloads/input
-processing.directory.path=C:/Users/RISHIKESH/Downloads/processing
-output.directory.path=C:/Users/RISHIKESH/Downloads/output
-archive.directory.path=C:/Users/RISHIKESH/Downloads/archive
+# Directory paths
+input.directory.path=/path/to/input/directory
+processing.directory.path=/path/to/processing/directory
+output.directory.path=/path/to/output/directory
+archive.directory.path=/path/to/archive/directory
 
 # CSV chunk size
 csv.chunk.size=50
 
-2)BatchConfig.java
 
-package com.example.springbatchcompare.config;
+1) CompareRecords:
 
-import com.example.springbatchcompare.processor.CompareRecordsTasklet;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.job.builder.StepBuilder;
-import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.transaction.PlatformTransactionManager;
+package com.example.batch.processor;
 
-@Configuration
-@EnableBatchProcessing
-public class BatchConfig {
-
-    @Bean
-    public Job compareRecordsJob(JobRepository jobRepository, PlatformTransactionManager transactionManager, Step compareRecordsStep) {
-        return new JobBuilder("compareRecordsJob", jobRepository)
-                .start(compareRecordsStep)
-                .build();
-    }
-
-    @Bean
-    public Step compareRecordsStep(JobRepository jobRepository, PlatformTransactionManager transactionManager, CompareRecordsTasklet tasklet) {
-        return new StepBuilder("compareRecordsStep", jobRepository)
-                .tasklet(tasklet, transactionManager)
-                .allowStartIfComplete(true)
-                .build();
-    }
-}
-
-
-3)CsvRecord.java
-
-package com.example.springbatchcompare.model;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class CsvRecord {
-    private String CUST_ID_NO;
-    private Long ACCT_NO;
-    private String NPA;
-    private String NXX;
-    private String TLN;
-    private Long BL_PROD_ID;
-    private String DELETE_IND;
-    private String ADMIN_CRT_TMSTAMP;
-    private Long BL_GRP_NO;
-    private String MTN_EFF_DT;
-    private String ADMIN_EFF_DT;
-    private Double ADMIN_CHG_AMT;
-    private String BL_PER_FROM_DT;
-    private String BL_PER_TO_DT;
-    private String ADMIN_FEE_RSN_CD;
-    private Long DISCNT_OFFR_ID;
-    private String VISION_USER_ID_CD;
-    private String ORIG_ADMIN_TMSTAMP;
-    private Long ORIG_INVOICE_NO;
-    private String CUST_DISC_IND;
-    private Integer CNTRCT_TERMS_ID;
-    private String CREDIT_ADJ_CD;
-    private String ADMIN_FEE_TYP;
-    private Long ADMIN_FEE_TYP_ID;
-    private String ORIG_TBL_SUBSYS_CD;
-    private String CHRG_CAT_CD;
-    private String CEQ_IND;
-    private String DB_USERID;
-    private String DB_TMSTAMP;
-    private String SOURCE_CLIENT_ID;
-    private String ADMIN_CRT_METH_CD;
-    private Long EQ_ORD_NO;
-    private String NETACE_LOC_ID;
-    private Long SVC_PROD_ID_DISCNT;
-    private String BL_CYC_NO;
-    private String CYC_MTH_YR;
-    private Double TAXABLE_MNY;
-    private Long TAX_PROD_ID;
-    private String OTC_TYPE;
-    private String CHGBCK_SUBMISSION_ID;
-    private String TAX_GEO_CODE;
-    private Long DATA_RT_FTPRNT_NO;
-    private String VODA_COUNTRY_CD;
-    private String AUDIT_TRANS_ID;
-    private String ORIG_CREATE_TS;
-    private Long INSTALL_LOAN_NO;
-    private String INSTALL_FIN_MARKET_ID;
-    private Integer LOAN_TERM_MTH_QTY;
-    private Integer TERM_BILLED_QTY;
-    private String ORG_REC;
-}
-
-4)Record.java
-
-package com.example.springbatchcompare.model;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.sql.Timestamp;
-import java.util.Date;
-
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class Record {
-    private String CUST_ID_NO;
-    private Long ACCT_NO;
-    private String NPA;
-    private String NXX;
-    private String TLN;
-    private Long BL_PROD_ID;
-    private String DELETE_IND;
-    private Timestamp ADMIN_CRT_TMSTAMP;
-    private Long BL_GRP_NO;
-    private Date MTN_EFF_DT;
-    private Date ADMIN_EFF_DT;
-    private Double ADMIN_CHG_AMT;
-    private Date BL_PER_FROM_DT;
-    private Date BL_PER_TO_DT;
-    private String ADMIN_FEE_RSN_CD;
-    private Long DISCNT_OFFR_ID;
-    private String VISION_USER_ID_CD;
-    private Timestamp ORIG_ADMIN_TMSTAMP;
-    private Long ORIG_INVOICE_NO;
-    private String CUST_DISC_IND;
-    private Integer CNTRCT_TERMS_ID;
-    private String CREDIT_ADJ_CD;
-    private String ADMIN_FEE_TYP;
-    private Long ADMIN_FEE_TYP_ID;
-    private String ORIG_TBL_SUBSYS_CD;
-    private String CHRG_CAT_CD;
-    private String CEQ_IND;
-    private String DB_USERID;
-    private Timestamp DB_TMSTAMP;
-    private String SOURCE_CLIENT_ID;
-    private String ADMIN_CRT_METH_CD;
-    private Long EQ_ORD_NO;
-    private String NETACE_LOC_ID;
-    private Long SVC_PROD_ID_DISCNT;
-    private String BL_CYC_NO;
-    private String CYC_MTH_YR;
-    private Double TAXABLE_MNY;
-    private Long TAX_PROD_ID;
-    private String OTC_TYPE;
-    private String CHGBCK_SUBMISSION_ID;
-    private String TAX_GEO_CODE;
-    private Long DATA_RT_FTPRNT_NO;
-    private String VODA_COUNTRY_CD;
-    private String AUDIT_TRANS_ID;
-    private Timestamp ORIG_CREATE_TS;
-    private Long INSTALL_LOAN_NO;
-    private String INSTALL_FIN_MARKET_ID;
-    private Integer LOAN_TERM_MTH_QTY;
-    private Integer TERM_BILLED_QTY;
-    private String ORG_REC;
-}
-
-5)CompareRecordsTasklet.java
-
-package com.example.springbatchcompare.processor;
-
-import com.example.springbatchcompare.model.CsvRecord;
-import com.example.springbatchcompare.model.Record;
-import com.example.springbatchcompare.reader.CsvRecordReader;
-import com.example.springbatchcompare.reader.DatabaseRecordReader;
-import com.example.springbatchcompare.writer.RecordWriter;
+import com.example.batch.model.CsvRecord;
+import com.example.batch.model.Record;
+import com.example.batch.reader.CsvRecordReader;
+import com.example.batch.reader.dbRecordReader;
+import com.example.batch.writer.RecordWriter;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.file.FlatFileItemReader;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.*;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -216,22 +51,19 @@ import java.util.List;
 import java.util.Objects;
 
 @Component
-public class CompareRecordsTasklet implements Tasklet {
+public class CompareRecords implements Tasklet {
 
     @Autowired
     private CsvRecordReader csvRecordReader;
 
     @Autowired
-    private DatabaseRecordReader dbRecordReader;
+    private dbRecordReader dbRecordReader;
 
     @Autowired
     private RecordWriter recordWriter;
 
     @Autowired
     private FlatFileItemReader<CsvRecord> csvRecordItemReader;
-
-    @Autowired
-    private JdbcCursorItemReader<Record> databaseRecordItemReader;
 
     @Value("${input.directory.path}")
     private String inputDirectory;
@@ -248,11 +80,20 @@ public class CompareRecordsTasklet implements Tasklet {
     @Value("${csv.chunk.size}")
     private int chunkSize;
 
-    @Override
-    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+    public void processFile(String fileName) throws Exception {
+        // Set the file to be processed
+	Resource resource = new FileSystemResource(processingDirectory + "/" + fileName);
+
+        FlatFileItemReader<CsvRecord> reader = csvRecordReader.csvRecordItemReader(resource);
+
+        // Open the CSV reader
         csvRecordItemReader.open(new ExecutionContext());
 
+        // Prepare output file writer
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outputDirectory + "/" + fileName));
+
         CsvRecord csvRecord;
+
         while ((csvRecord = csvRecordItemReader.read()) != null) {
             List<CsvRecord> chunk = new ArrayList<>();
             while (chunk.size() < chunkSize && csvRecord != null) {
@@ -274,14 +115,22 @@ public class CompareRecordsTasklet implements Tasklet {
                     }
                 }
             }
+
+            // Write only_in_file and partially_matched records to the output file
+            writeCategorizedRecords(writer, recordWriter.getOnlyInFile(), recordWriter.getNotPerfectlyMatched());
+
+            // Clear the categorized records for the next chunk
+            recordWriter.clear();
         }
 
+        // Close the CSV reader and the writer
         csvRecordItemReader.close();
+        writer.close();
 
-        // Print categorized records to screen
-        recordWriter.printCategorizedRecords();
-
-        return RepeatStatus.FINISHED;
+        // Move the processed file to the archive directory
+        Path sourcePath = Paths.get(processingDirectory + "/" + fileName);
+        Path targetPath = Paths.get(archiveDirectory + "/" + fileName);
+        Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
     }
 
     private List<Record> fetchMatchingDbRecords(List<CsvRecord> chunk) {
@@ -371,7 +220,6 @@ public class CompareRecordsTasklet implements Tasklet {
     }
 
     private boolean compareField(Object csvValue, Object dbValue) {
-        System.out.println("Comparing Field - CSV Value: " + csvValue + ", DB Value: " + dbValue); // Debug statement
         if (csvValue == null || (csvValue instanceof String && ((String) csvValue).trim().isEmpty())) {
             csvValue = null;
         }
@@ -414,24 +262,36 @@ public class CompareRecordsTasklet implements Tasklet {
         SimpleDateFormat csvDateFormat = new SimpleDateFormat("MM/dd/yyyy");
         return csvDateFormat.parse(dateStr);
     }
+
+    private void writeCategorizedRecords(BufferedWriter writer, List<CsvRecord> onlyInFile, List<CsvRecord> notPerfectlyMatched) throws IOException {
+        for (CsvRecord record : onlyInFile) {
+            writer.write(record.getORG_REC());
+            writer.newLine();
+        }
+        for (CsvRecord record : notPerfectlyMatched) {
+            writer.write(record.getORG_REC());
+            writer.newLine();
+        }
+    }
 }
 
 
-6)CsvRecordReader.java
+2) CsvRecordReader
 
-package com.example.springbatchcompare.reader;
+package com.example.batch.reader;
 
-import com.example.springbatchcompare.model.CsvRecord;
+import com.example.batch.model.CsvRecord;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -440,24 +300,29 @@ public class CsvRecordReader {
 
     @Bean
     @StepScope
-    public FlatFileItemReader<CsvRecord> csvRecordItemReader(@Value("#{jobParameters['input.file.path']}") Resource inputCsv) {
+    public FlatFileItemReader<CsvRecord> csvRecordItemReader() {
         return new FlatFileItemReaderBuilder<CsvRecord>()
                 .name("csvRecordReader")
-                .resource(inputCsv)
                 .delimited()
                 .delimiter("|")
-                .names(new String[]{"CUST_ID_NO", "ACCT_NO", "NPA", "NXX", "TLN", "BL_PROD_ID", "DELETE_IND", "ADMIN_CRT_TMSTAMP", "BL_GRP_NO", "MTN_EFF_DT", "ADMIN_EFF_DT", "ADMIN_CHG_AMT", "BL_PER_FROM_DT", "BL_PER_TO_DT", "ADMIN_FEE_RSN_CD", "DISCNT_OFFR_ID", "VISION_USER_ID_CD", "ORIG_ADMIN_TMSTAMP", "ORIG_INVOICE_NO", "CUST_DISC_IND", "CNTRCT_TERMS_ID", "CREDIT_ADJ_CD", "ADMIN_FEE_TYP", "ADMIN_FEE_TYP_ID", "ORIG_TBL_SUBSYS_CD", "CHRG_CAT_CD", "CEQ_IND", "DB_USERID", "DB_TMSTAMP", "SOURCE_CLIENT_ID", "ADMIN_CRT_METH_CD", "EQ_ORD_NO", "NETACE_LOC_ID", "SVC_PROD_ID_DISCNT", "BL_CYC_NO", "CYC_MTH_YR", "TAXABLE_MNY", "TAX_PROD_ID", "OTC_TYPE", "CHGBCK_SUBMISSION_ID", "TAX_GEO_CODE", "DATA_RT_FTPRNT_NO", "VODA_COUNTRY_CD", "AUDIT_TRANS_ID", "ORIG_CREATE_TS", "INSTALL_LOAN_NO", "INSTALL_FIN_MARKET_ID", "LOAN_TERM_MTH_QTY", "TERM_BILLED_QTY", "ORG_REC"})
-                .fieldSetMapper(new BeanWrapperFieldSetMapper<CsvRecord>() {{
-                    setTargetType(CsvRecord.class);
-                }})
+                .names(new String[]{"CUST_ID_NO", "ACCT_NO", "NPA", "NXX", "TLN", "BL_PROD_ID", "DELETE_IND", "ADMIN_CRT_TMSTAMP", "BL_GRP_NO", "MTN_EFF_DT", "ADMIN_EFF_DT", "ADMIN_CHG_AMT", "BL_PER_FROM_DT", "BL_PER_TO_DT", "ADMIN_FEE_RSN_CD", "DISCNT_OFFR_ID", "VISION_USER_ID_CD", "ORIG_ADMIN_TMSTAMP", "ORIG_INVOICE_NO", "CUST_DISC_IND", "CNTRCT_TERMS_ID", "CREDIT_ADJ_CD", "ADMIN_FEE_TYP", "ADMIN_FEE_TYP_ID", "ORIG_TBL_SUBSYS_CD", "CHRG_CAT_CD", "CEQ_IND", "DB_USERID", "DB_TMSTAMP", "SOURCE_CLIENT_ID", "ADMIN_CRT_METH_CD", "EQ_ORD_NO", "NETACE_LOC_ID", "SVC_PROD_ID_DISCNT", "BL_CYC_NO", "CYC_MTH_YR", "TAXABLE_MNY", "TAX_PROD_ID", "OTC_TYPE", "CHGBCK_SUBMISSION_ID", "TAX_GEO_CODE", "DATA_RT_FTPRNT_NO", "VODA_COUNTRY_CD", "AUDIT_TRANS_ID", "ORIG_CREATE_TS", "INSTALL_LOAN_NO", "INSTALL_FIN_MARKET_ID", "LOAN_TERM_MTH_QTY", "TERM_BILLED_QTY"})
+                .fieldSetMapper(new BeanWrapperFieldSetMapper<CsvRecord>() {
+                    @Override
+                    public CsvRecord mapFieldSet(org.springframework.batch.item.file.transform.FieldSet fieldSet) throws org.springframework.validation.BindException {
+                        CsvRecord record = super.mapFieldSet(fieldSet);
+                        record.setORG_REC(fieldSet.toString());
+                        return record;
+                    }
+                })
                 .build();
     }
 
-    public List<CsvRecord> readAll(FlatFileItemReader<CsvRecord> reader) throws Exception {
+    public List<CsvRecord> readAll(FlatFileItemReader<CsvRecord> reader, Resource resource) throws Exception {
         List<CsvRecord> records = new ArrayList<>();
         CsvRecord record;
 
         ExecutionContext executionContext = new ExecutionContext();
+        reader.setResource(resource);
         reader.open(executionContext);
         while ((record = reader.read()) != null) {
             records.add(record);
@@ -469,181 +334,27 @@ public class CsvRecordReader {
 }
 
 
-7)DatabaseRecordReader.java
+3)Batch Application:
 
-package com.example.springbatchcompare.reader;
-
-import com.example.springbatchcompare.model.Record;
-import com.example.springbatchcompare.mapper.RecordRowMapper;
-import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.List;
-
-@Configuration
-public class DatabaseRecordReader {
-
-    @Bean
-    @StepScope
-    public JdbcCursorItemReader<Record> databaseRecordItemReader(DataSource dataSource) {
-        return new JdbcCursorItemReaderBuilder<Record>()
-                .name("databaseRecordReader")
-                .dataSource(dataSource)
-                .sql("SELECT * FROM YOUR_TABLE WHERE otc_seq IS NOT NULL")
-                .rowMapper(new RecordRowMapper())
-                .build();
-    }
-
-    public List<Record> readByQuery(String query) {
-        JdbcCursorItemReader<Record> reader = new JdbcCursorItemReaderBuilder<Record>()
-                .name("databaseRecordReaderByQuery")
-		.dataSource(dataSource)
-                .sql(query)
-                .rowMapper(new RecordRowMapper())
-                .build();
-
-        return readAll(reader);
-    }
-
-    package com.example.springbatchcompare.reader;
-
-import com.example.springbatchcompare.model.Record;
-import com.example.springbatchcompare.mapper.RecordRowMapper;
-import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.item.ExecutionContext;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.List;
-
-@Configuration
-public class DatabaseRecordReader {
-
-//    @Bean
-//    @StepScope
-//    public JdbcCursorItemReader<Record> databaseRecordItemReader(DataSource dataSource) {
-//        return new JdbcCursorItemReaderBuilder<Record>()
-//                .name("databaseRecordReader")
-//                .dataSource(dataSource)
-//                .sql("SELECT * FROM YOUR_TABLE WHERE otc_seq IS NOT NULL")
-//                .rowMapper(new RecordRowMapper())
-//                .build();
-//    }
-
-    public List<Record> readByQuery(String query, DataSource dataSource) {
-        JdbcCursorItemReader<Record> reader = new JdbcCursorItemReaderBuilder<Record>()
-                .name("databaseRecordReaderByQuery")
-                .dataSource(dataSource)
-                .sql(query)
-                .rowMapper(new RecordRowMapper())
-                .build();
-
-        return readAll(reader);
-    }
-
-    private List<Record> readAll(JdbcCursorItemReader<Record> reader) {
-        List<Record> records = new ArrayList<>();
-        try {
-            reader.open(new ExecutionContext());
-            Record record;
-            while ((record = reader.read()) != null) {
-                records.add(record);
-            }
-            reader.close();
-        } catch (Exception e) {
-            throw new RuntimeException("Error reading from database", e);
-        }
-        return records;
-    }
-}
-
-
-8)RecordWriter.java
-
-package com.example.springbatchcompare.writer;
-
-import com.example.springbatchcompare.model.CsvRecord;
-import org.springframework.stereotype.Component;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-@Component
-public class RecordWriter {
-
-    private final List<CsvRecord> onlyInFile = new ArrayList<>();
-    private final List<CsvRecord> perfectlyMatched = new ArrayList<>();
-    private final List<CsvRecord> notPerfectlyMatched = new ArrayList<>();
-
-    @Value("${output.directory.path}")
-    private String outputDirectory;
-
-    public void writeOnlyInFile(CsvRecord record) {
-        onlyInFile.add(record);
-    }
-
-    public void writePerfectlyMatched(CsvRecord record) {
-        perfectlyMatched.add(record);
-    }
-
-    public void writeNotPerfectlyMatched(CsvRecord record) {
-        notPerfectlyMatched.add(record);
-    }
-
-    //Method to print and write to file
-    public void printCategorizedRecords() throws IOException {
-        System.out.println("Records Only in file:");
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputDirectory + "/output.csv"))) {
-            for (CsvRecord record : onlyInFile) {
-                System.out.println(record);
-                writer.write(record.getORG_REC());
-                writer.newLine();
-            }
-            System.out.println("Perfectly matched:");
-            for (CsvRecord record : perfectlyMatched) {
-                System.out.println(record);
-            }
-            System.out.println("Not perfectly matched:");
-            for (CsvRecord record : notPerfectlyMatched) {
-                System.out.println(record);
-                writer.write(record.getORG_REC());
-                writer.newLine();
-            }
-        }
-    }
-}
-
-9)DirectoryListenerService.java
-
-package com.example.springbatchcompare.service;
+package com.example.batch;
 
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
-@Service
-public class DirectoryListenerService {
+@SpringBootApplication
+public class BatchApplication {
 
     @Autowired
     private JobLauncher jobLauncher;
@@ -651,82 +362,58 @@ public class DirectoryListenerService {
     @Autowired
     private Job compareRecordsJob;
 
-    @Value("${input.directory.path}")
-    private String inputDirectory;
-
-    @Value("${processing.directory.path}")
-    private String processingDirectory;
-
-    @Value("${output.directory.path}")
-    private String outputDirectory;
-
-    @Value("${archive.directory.path}")
-    private String archiveDirectory;
-
-    public void startListening() throws IOException, InterruptedException {
-        WatchService watchService = FileSystems.getDefault().newWatchService();
-        Path path = Paths.get(inputDirectory);
-        path.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
-
-        WatchKey key;
-        while ((key = watchService.take()) != null) {
-            for (WatchEvent<?> event : key.pollEvents()) {
-                System.out.println("Event kind:" + event.kind() + ". File affected: " + event.context() + ".");
-                File file = new File(inputDirectory + "/" + event.context().toString());
-                processFile(file);
-            }
-            key.reset();
-        }
-    }
-
-    private void processFile(File file) throws IOException, InterruptedException {
-        Files.move(file.toPath(), Paths.get(processingDirectory + "/" + file.getName()), StandardCopyOption.REPLACE_EXISTING);
-
-        JobParameters jobParameters = new JobParametersBuilder()
-                .addString("input.file.path", "file:" + processingDirectory + "/" + file.getName())
-                .toJobParameters();
-
-        jobLauncher.run(compareRecordsJob, jobParameters);
-
-        Files.move(Paths.get(processingDirectory + "/" + file.getName()), Paths.get(archiveDirectory + "/" + file.getName()), StandardCopyOption.REPLACE_EXISTING);
-    }
-}
-
-10)BatchApplication.java
-
-package com.example.springbatchcompare;
-
-import com.example.springbatchcompare.service.DirectoryListenerService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
-
-import java.io.IOException;
-
-@SpringBootApplication
-public class BatchApplication {
-
-    @Autowired
-    private DirectoryListenerService directoryListenerService;
-
     public static void main(String[] args) {
         SpringApplication.run(BatchApplication.class, args);
     }
 
     @EventListener(ApplicationReadyEvent.class)
-    public void startListening() throws IOException, InterruptedException {
-        directoryListenerService.startListening();
+    public void runJob() throws Exception {
+        jobLauncher.run(compareRecordsJob, new JobParametersBuilder().toJobParameters());
     }
 }
 
 
-11)RecordRowMapper.java
+4)Batch Config
 
-package com.example.springbatchcompare.mapper;
+package com.example.batch.config;
 
-import com.example.springbatchcompare.model.Record;
+import com.example.batch.processor.CompareRecords;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.job.builder.StepBuilder;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.PlatformTransactionManager;
+
+@Configuration
+@EnableBatchProcessing
+public class BatchConfig {
+
+    @Bean
+    public Job compareRecordsJob(JobRepository jobRepository, PlatformTransactionManager transactionManager, CompareRecords tasklet) {
+        return new JobBuilder("compareRecordsJob", jobRepository)
+                .start(compareRecordsStep(jobRepository, transactionManager, tasklet))
+                .build();
+    }
+
+    @Bean
+    public Step compareRecordsStep(JobRepository jobRepository, PlatformTransactionManager transactionManager, CompareRecords tasklet) {
+        return new StepBuilder("compareRecordsStep", jobRepository)
+                .tasklet(tasklet, transactionManager)
+                .allowStartIfComplete(true)
+                .build();
+    }
+}
+
+
+5)Record Row Mapper
+
+package com.example.batch.mapper;
+
+import com.example.batch.model.Record;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -785,11 +472,253 @@ public class RecordRowMapper implements RowMapper<Record> {
                 rs.getLong("INSTALL_LOAN_NO"),
                 rs.getString("INSTALL_FIN_MARKET_ID"),
                 rs.getInt("LOAN_TERM_MTH_QTY"),
-                rs.getInt("TERM_BILLED_QTY"),
-                rs.getString("ORG_REC")
+                rs.getInt("TERM_BILLED_QTY")
         );
     }
 }
 
 
-12)
+6)CSV Record:
+
+package com.example.batch.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class CsvRecord {
+    private String CUST_ID_NO;
+    private Long ACCT_NO;
+    private String NPA;
+    private String NXX;
+    private String TLN;
+    private Long BL_PROD_ID;
+    private String DELETE_IND;
+    private String ADMIN_CRT_TMSTAMP;
+    private Long BL_GRP_NO;
+    private String MTN_EFF_DT;
+    private String ADMIN_EFF_DT;
+    private String ADMIN_CHG_AMT;
+    private String BL_PER_FROM_DT;
+    private String BL_PER_TO_DT;
+    private String ADMIN_FEE_RSN_CD;
+    private Long DISCNT_OFFR_ID;
+    private String VISION_USER_ID_CD;
+    private String ORIG_ADMIN_TMSTAMP;
+    private Long ORIG_INVOICE_NO;
+    private String CUST_DISC_IND;
+    private Integer CNTRCT_TERMS_ID;
+    private String CREDIT_ADJ_CD;
+    private String ADMIN_FEE_TYP;
+    private Long ADMIN_FEE_TYP_ID;
+    private String ORIG_TBL_SUBSYS_CD;
+    private String CHRG_CAT_CD;
+    private String CEQ_IND;
+    private String DB_USERID;
+    private String DB_TMSTAMP;
+    private String SOURCE_CLIENT_ID;
+    private String ADMIN_CRT_METH_CD;
+    private Long EQ_ORD_NO;
+    private String NETACE_LOC_ID;
+    private Long SVC_PROD_ID_DISCNT;
+    private String BL_CYC_NO;
+    private String CYC_MTH_YR;
+    private Double TAXABLE_MNY;
+    private Long TAX_PROD_ID;
+    private String OTC_TYPE;
+    private String CHGBCK_SUBMISSION_ID;
+    private String TAX_GEO_CODE;
+    private Long DATA_RT_FTPRNT_NO;
+    private String VODA_COUNTRY_CD;
+    private String AUDIT_TRANS_ID;
+    private String ORIG_CREATE_TS;
+    private Long INSTALL_LOAN_NO;
+    private String INSTALL_FIN_MARKET_ID;
+    private Integer LOAN_TERM_MTH_QTY;
+    private Integer TERM_BILLED_QTY;
+    private String ORG_REC; // Add this field to store the original CSV record
+}
+
+
+7)Record:
+
+package com.example.batch.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.sql.Timestamp;
+import java.util.Date;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Record {
+    private String CUST_ID_NO;
+    private Long ACCT_NO;
+    private String NPA;
+    private String NXX;
+    private String TLN;
+    private Long BL_PROD_ID;
+    private String DELETE_IND;
+    private Timestamp ADMIN_CRT_TMSTAMP;
+    private Long BL_GRP_NO;
+    private Date MTN_EFF_DT;
+    private Date ADMIN_EFF_DT;
+    private Double ADMIN_CHG_AMT;
+    private Date BL_PER_FROM_DT;
+    private Date BL_PER_TO_DT;
+    private String ADMIN_FEE_RSN_CD;
+    private Long DISCNT_OFFR_ID;
+    private String VISION_USER_ID_CD;
+    private Timestamp ORIG_ADMIN_TMSTAMP;
+    private Long ORIG_INVOICE_NO;
+    private String CUST_DISC_IND;
+    private Integer CNTRCT_TERMS_ID;
+    private String CREDIT_ADJ_CD;
+    private String ADMIN_FEE_TYP;
+    private Long ADMIN_FEE_TYP_ID;
+    private String ORIG_TBL_SUBSYS_CD;
+    private String CHRG_CAT_CD;
+    private String CEQ_IND;
+    private String DB_USERID;
+    private Timestamp DB_TMSTAMP;
+    private String SOURCE_CLIENT_ID;
+    private String ADMIN_CRT_METH_CD;
+    private Long EQ_ORD_NO;
+    private String NETACE_LOC_ID;
+    private Long SVC_PROD_ID_DISCNT;
+    private String BL_CYC_NO;
+    private String CYC_MTH_YR;
+    private Double TAXABLE_MNY;
+    private Long TAX_PROD_ID;
+    private String OTC_TYPE;
+    private String CHGBCK_SUBMISSION_ID;
+    private String TAX_GEO_CODE;
+    private Long DATA_RT_FTPRNT_NO;
+    private String VODA_COUNTRY_CD;
+    private String AUDIT_TRANS_ID;
+    private Timestamp ORIG_CREATE_TS;
+    private Long INSTALL_LOAN_NO;
+    private String INSTALL_FIN_MARKET_ID;
+    private Integer LOAN_TERM_MTH_QTY;
+    private Integer TERM_BILLED_QTY;
+    private String ORG_REC; // Add this field to store the original CSV record
+}
+
+
+8)dbRecordReader:
+
+package com.example.batch.reader;
+
+import com.example.batch.model.Record;
+import com.example.batch.mapper.RecordRowMapper;
+import org.springframework.batch.item.database.JdbcCursorItemReader;
+import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import javax.sql.DataSource;
+import java.util.List;
+
+@Configuration
+public class dbRecordReader {
+
+    @Autowired
+    private DataSource dataSource;
+
+    @Bean
+    public JdbcCursorItemReader<Record> databaseRecordItemReader(String query) {
+        return new JdbcCursorItemReaderBuilder<Record>()
+                .name("databaseRecordReader")
+                .dataSource(dataSource)
+                .sql(query)
+                .rowMapper(new RecordRowMapper())
+                .build();
+    }
+
+    public List<Record> readByQuery(String query) {
+        JdbcCursorItemReader<Record> reader = databaseRecordItemReader(query);
+        reader.open(new ExecutionContext());
+        List<Record> records = new ArrayList<>();
+        Record record;
+        while ((record = reader.read()) != null) {
+            records.add(record);
+        }
+        reader.close();
+        return records;
+    }
+}
+
+
+9)RecordWriter:
+
+package com.example.batch.writer;
+
+import com.example.batch.model.CsvRecord;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
+public class RecordWriter {
+
+    private final List<CsvRecord> onlyInFile = new ArrayList<>();
+    private final List<CsvRecord> perfectlyMatched = new ArrayList<>();
+    private final List<CsvRecord> notPerfectlyMatched = new ArrayList<>();
+
+    public void writeOnlyInFile(CsvRecord record) {
+        onlyInFile.add(record);
+    }
+
+    public void writePerfectlyMatched(CsvRecord record) {
+        perfectlyMatched.add(record);
+    }
+
+    public void writeNotPerfectlyMatched(CsvRecord record) {
+        notPerfectlyMatched.add(record);
+    }
+
+    public List<CsvRecord> getOnlyInFile() {
+        return onlyInFile;
+    }
+
+    public List<CsvRecord> getNotPerfectlyMatched() {
+        return notPerfectlyMatched;
+    }
+
+    public void clear() {
+        onlyInFile.clear();
+        notPerfectlyMatched.clear();
+        perfectlyMatched.clear();
+    }
+
+    public void printCategorizedRecords() {
+        System.out.println("Records Only in file:");
+        for (CsvRecord record : onlyInFile) {
+            System.out.println(record);
+        }
+
+        System.out.println("Perfectly matched:");
+        for (CsvRecord record : perfectlyMatched) {
+            System.out.println(record);
+        }
+
+        System.out.println("Not perfectly matched:");
+        for (CsvRecord record : notPerfectlyMatched) {
+            System.out.println(record);
+        }
+    }
+}
+
+10)
