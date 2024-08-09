@@ -760,3 +760,47 @@ public class DirectoryListenerService {
         Files.move(Paths.get(processingDirectory + "/" + file.getName()), Paths.get(archiveDirectory + "/" + file.getName()), StandardCopyOption.REPLACE_EXISTING);
     }
 }
+
+
+
+-------
+
+private void convertEmptyToNull(CsvRecord record) {
+        Field[] fields = CsvRecord.class.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(record);
+                if (value instanceof String) {
+                    String strValue = (String) value;
+                    if (strValue != null && strValue.trim().isEmpty()) {
+                        field.set(record, null);
+                    }
+                } else if (value instanceof Long && (Long) value == 0) {
+                    String fieldName = field.getName();
+                    Field stringField = CsvRecord.class.getDeclaredField(fieldName);
+                    stringField.setAccessible(true);
+                    if (((String) stringField.get(record)).trim().isEmpty()) {
+                        field.set(record, null);
+                    }
+                } else if (value instanceof Double && (Double) value == 0.0) {
+                    String fieldName = field.getName();
+                    Field stringField = CsvRecord.class.getDeclaredField(fieldName);
+                    stringField.setAccessible(true);
+                    if (((String) stringField.get(record)).trim().isEmpty()) {
+                        field.set(record, null);
+                    }
+                } else if (value instanceof Integer && (Integer) value == 0) {
+                    String fieldName = field.getName();
+                    Field stringField = CsvRecord.class.getDeclaredField(fieldName);
+                    stringField.setAccessible(true);
+                    if (((String) stringField.get(record)).trim().isEmpty()) {
+                        field.set(record, null);
+                    }
+                }
+            } catch (IllegalAccessException | NoSuchFieldException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
