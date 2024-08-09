@@ -1,3 +1,87 @@
+package com.example.batch.reader;
+
+import com.example.batch.model.CsvRecord;
+import org.springframework.batch.item.file.mapping.FieldSetMapper;
+import org.springframework.batch.item.file.transform.FieldSet;
+import org.springframework.validation.BindException;
+
+public class CustomCsvRecordFieldSetMapper implements FieldSetMapper<CsvRecord> {
+
+    @Override
+    public CsvRecord mapFieldSet(FieldSet fieldSet) throws BindException {
+        CsvRecord record = new CsvRecord();
+
+        record.setCUST_ID_NO(fieldSet.readString("CUST_ID_NO"));
+        record.setACCT_NO(readLong(fieldSet, "ACCT_NO"));
+        record.setNPA(fieldSet.readString("NPA"));
+        record.setNXX(fieldSet.readString("NXX"));
+        record.setTLN(fieldSet.readString("TLN"));
+        record.setBL_PROD_ID(readLong(fieldSet, "BL_PROD_ID"));
+        record.setDELETE_IND(fieldSet.readString("DELETE_IND"));
+        record.setADMIN_CRT_TMSTAMP(fieldSet.readString("ADMIN_CRT_TMSTAMP"));
+        record.setBL_GRP_NO(readLong(fieldSet, "BL_GRP_NO"));
+        record.setMTN_EFF_DT(fieldSet.readString("MTN_EFF_DT"));
+        record.setADMIN_EFF_DT(fieldSet.readString("ADMIN_EFF_DT"));
+        record.setADMIN_CHG_AMT(readDouble(fieldSet, "ADMIN_CHG_AMT"));
+        record.setBL_PER_FROM_DT(fieldSet.readString("BL_PER_FROM_DT"));
+        record.setBL_PER_TO_DT(fieldSet.readString("BL_PER_TO_DT"));
+        record.setADMIN_FEE_RSN_CD(fieldSet.readString("ADMIN_FEE_RSN_CD"));
+        record.setDISCNT_OFFR_ID(readLong(fieldSet, "DISCNT_OFFR_ID"));
+        record.setVISION_USER_ID_CD(fieldSet.readString("VISION_USER_ID_CD"));
+        record.setORIG_ADMIN_TMSTAMP(fieldSet.readString("ORIG_ADMIN_TMSTAMP"));
+        record.setORIG_INVOICE_NO(readLong(fieldSet, "ORIG_INVOICE_NO"));
+        record.setCUST_DISC_IND(fieldSet.readString("CUST_DISC_IND"));
+        record.setCNTRCT_TERMS_ID(readInteger(fieldSet, "CNTRCT_TERMS_ID"));
+        record.setCREDIT_ADJ_CD(fieldSet.readString("CREDIT_ADJ_CD"));
+        record.setADMIN_FEE_TYP(fieldSet.readString("ADMIN_FEE_TYP"));
+        record.setADMIN_FEE_TYP_ID(readLong(fieldSet, "ADMIN_FEE_TYP_ID"));
+        record.setORIG_TBL_SUBSYS_CD(fieldSet.readString("ORIG_TBL_SUBSYS_CD"));
+        record.setCHRG_CAT_CD(fieldSet.readString("CHRG_CAT_CD"));
+        record.setCEQ_IND(fieldSet.readString("CEQ_IND"));
+        record.setDB_USERID(fieldSet.readString("DB_USERID"));
+        record.setDB_TMSTAMP(fieldSet.readString("DB_TMSTAMP"));
+        record.setSOURCE_CLIENT_ID(fieldSet.readString("SOURCE_CLIENT_ID"));
+        record.setADMIN_CRT_METH_CD(fieldSet.readString("ADMIN_CRT_METH_CD"));
+        record.setEQ_ORD_NO(readLong(fieldSet, "EQ_ORD_NO"));
+        record.setNETACE_LOC_ID(fieldSet.readString("NETACE_LOC_ID"));
+        record.setSVC_PROD_ID_DISCNT(readLong(fieldSet, "SVC_PROD_ID_DISCNT"));
+        record.setBL_CYC_NO(fieldSet.readString("BL_CYC_NO"));
+        record.setCYC_MTH_YR(fieldSet.readString("CYC_MTH_YR"));
+        record.setTAXABLE_MNY(readDouble(fieldSet, "TAXABLE_MNY"));
+        record.setTAX_PROD_ID(readLong(fieldSet, "TAX_PROD_ID"));
+        record.setOTC_TYPE(fieldSet.readString("OTC_TYPE"));
+        record.setCHGBCK_SUBMISSION_ID(fieldSet.readString("CHGBCK_SUBMISSION_ID"));
+        record.setTAX_GEO_CODE(fieldSet.readString("TAX_GEO_CODE"));
+        record.setDATA_RT_FTPRNT_NO(readLong(fieldSet, "DATA_RT_FTPRNT_NO"));
+        record.setVODA_COUNTRY_CD(fieldSet.readString("VODA_COUNTRY_CD"));
+        record.setAUDIT_TRANS_ID(fieldSet.readString("AUDIT_TRANS_ID"));
+        record.setORIG_CREATE_TS(fieldSet.readString("ORIG_CREATE_TS"));
+        record.setINSTALL_LOAN_NO(readLong(fieldSet, "INSTALL_LOAN_NO"));
+        record.setINSTALL_FIN_MARKET_ID(fieldSet.readString("INSTALL_FIN_MARKET_ID"));
+        record.setLOAN_TERM_MTH_QTY(readInteger(fieldSet, "LOAN_TERM_MTH_QTY"));
+        record.setTERM_BILLED_QTY(readInteger(fieldSet, "TERM_BILLED_QTY"));
+
+        // Manually set the ORG_REC field with the entire original CSV line
+        record.setORG_REC(fieldSet.toString());
+
+        return record;
+    }
+
+    private Long readLong(FieldSet fieldSet, String fieldName) {
+        String value = fieldSet.readString(fieldName);
+        return value != null && !value.trim().isEmpty() ? Long.valueOf(value) : null;
+    }
+
+    private Double readDouble(FieldSet fieldSet, String fieldName) {
+        String value = fieldSet.readString(fieldName);
+        return value != null && !value.trim().isEmpty() ? Double.valueOf(value) : null;
+    }
+
+    private Integer readInteger(FieldSet fieldSet, String fieldName) {
+        String value = fieldSet.readString(fieldName);
+        return value != null && !value.trim().isEmpty() ? Integer.valueOf(value) : null;
+    }
+}
 
 1)
 
