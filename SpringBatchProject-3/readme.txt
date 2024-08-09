@@ -765,42 +765,94 @@ public class DirectoryListenerService {
 
 -------
 
-private void convertEmptyToNull(CsvRecord record) {
-        Field[] fields = CsvRecord.class.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(record);
-                if (value instanceof String) {
-                    String strValue = (String) value;
-                    if (strValue != null && strValue.trim().isEmpty()) {
-                        field.set(record, null);
-                    }
-                } else if (value instanceof Long && (Long) value == 0) {
-                    String fieldName = field.getName();
-                    Field stringField = CsvRecord.class.getDeclaredField(fieldName);
-                    stringField.setAccessible(true);
-                    if (((String) stringField.get(record)).trim().isEmpty()) {
-                        field.set(record, null);
-                    }
-                } else if (value instanceof Double && (Double) value == 0.0) {
-                    String fieldName = field.getName();
-                    Field stringField = CsvRecord.class.getDeclaredField(fieldName);
-                    stringField.setAccessible(true);
-                    if (((String) stringField.get(record)).trim().isEmpty()) {
-                        field.set(record, null);
-                    }
-                } else if (value instanceof Integer && (Integer) value == 0) {
-                    String fieldName = field.getName();
-                    Field stringField = CsvRecord.class.getDeclaredField(fieldName);
-                    stringField.setAccessible(true);
-                    if (((String) stringField.get(record)).trim().isEmpty()) {
-                        field.set(record, null);
-                    }
-                }
-            } catch (IllegalAccessException | NoSuchFieldException e) {
-                throw new RuntimeException(e);
-            }
+package com.example.batch.reader;
+
+import com.example.batch.model.CsvRecord;
+import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.batch.item.file.mapping.FieldSetMapper;
+import org.springframework.batch.item.file.transform.FieldSet;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.validation.BindException;
+
+@Configuration
+public class CsvRecordReader {
+
+    @Bean
+    @StepScope
+    public FlatFileItemReader<CsvRecord> csvRecordItemReader() {
+        return new FlatFileItemReaderBuilder<CsvRecord>()
+                .name("csvRecordReader")
+                .delimited()
+                .delimiter("|")
+                .names(new String[]{"CUST_ID_NO", "ACCT_NO", "NPA", "NXX", "TLN", "BL_PROD_ID", "DELETE_IND", "ADMIN_CRT_TMSTAMP", "BL_GRP_NO", "MTN_EFF_DT", "ADMIN_EFF_DT", "ADMIN_CHG_AMT", "BL_PER_FROM_DT", "BL_PER_TO_DT", "ADMIN_FEE_RSN_CD", "DISCNT_OFFR_ID", "VISION_USER_ID_CD", "ORIG_ADMIN_TMSTAMP", "ORIG_INVOICE_NO", "CUST_DISC_IND", "CNTRCT_TERMS_ID", "CREDIT_ADJ_CD", "ADMIN_FEE_TYP", "ADMIN_FEE_TYP_ID", "ORIG_TBL_SUBSYS_CD", "CHRG_CAT_CD", "CEQ_IND", "DB_USERID", "DB_TMSTAMP", "SOURCE_CLIENT_ID", "ADMIN_CRT_METH_CD", "EQ_ORD_NO", "NETACE_LOC_ID", "SVC_PROD_ID_DISCNT", "BL_CYC_NO", "CYC_MTH_YR", "TAXABLE_MNY", "TAX_PROD_ID", "OTC_TYPE", "CHGBCK_SUBMISSION_ID", "TAX_GEO_CODE", "DATA_RT_FTPRNT_NO", "VODA_COUNTRY_CD", "AUDIT_TRANS_ID", "ORIG_CREATE_TS", "INSTALL_LOAN_NO", "INSTALL_FIN_MARKET_ID", "LOAN_TERM_MTH_QTY", "TERM_BILLED_QTY"})
+                .fieldSetMapper(new CustomCsvRecordFieldSetMapper())
+                .build();
+    }
+
+    public static class CustomCsvRecordFieldSetMapper implements FieldSetMapper<CsvRecord> {
+
+        @Override
+        public CsvRecord mapFieldSet(FieldSet fieldSet) throws BindException {
+            CsvRecord record = new CsvRecord();
+            record.setCUST_ID_NO(fieldSet.readString("CUST_ID_NO"));
+            record.setACCT_NO(fieldSet.readLong("ACCT_NO", null));
+            record.setNPA(fieldSet.readString("NPA"));
+            record.setNXX(fieldSet.readString("NXX"));
+            record.setTLN(fieldSet.readString("TLN"));
+            record.setBL_PROD_ID(fieldSet.readLong("BL_PROD_ID", null));
+            record.setDELETE_IND(fieldSet.readString("DELETE_IND"));
+            record.setADMIN_CRT_TMSTAMP(fieldSet.readString("ADMIN_CRT_TMSTAMP"));
+            record.setBL_GRP_NO(fieldSet.readLong("BL_GRP_NO", null));
+            record.setMTN_EFF_DT(fieldSet.readString("MTN_EFF_DT"));
+            record.setADMIN_EFF_DT(fieldSet.readString("ADMIN_EFF_DT"));
+            record.setADMIN_CHG_AMT(fieldSet.readDouble("ADMIN_CHG_AMT", null));
+            record.setBL_PER_FROM_DT(fieldSet.readString("BL_PER_FROM_DT"));
+            record.setBL_PER_TO_DT(fieldSet.readString("BL_PER_TO_DT"));
+            record.setADMIN_FEE_RSN_CD(fieldSet.readString("ADMIN_FEE_RSN_CD"));
+            record.setDISCNT_OFFR_ID(fieldSet.readLong("DISCNT_OFFR_ID", null));
+            record.setVISION_USER_ID_CD(fieldSet.readString("VISION_USER_ID_CD"));
+            record.setORIG_ADMIN_TMSTAMP(fieldSet.readString("ORIG_ADMIN_TMSTAMP"));
+            record.setORIG_INVOICE_NO(fieldSet.readLong("ORIG_INVOICE_NO", null));
+            record.setCUST_DISC_IND(fieldSet.readString("CUST_DISC_IND"));
+            record.setCNTRCT_TERMS_ID(fieldSet.readInt("CNTRCT_TERMS_ID", null));
+            record.setCREDIT_ADJ_CD(fieldSet.readString("CREDIT_ADJ_CD"));
+            record.setADMIN_FEE_TYP(fieldSet.readString("ADMIN_FEE_TYP"));
+            record.setADMIN_FEE_TYP_ID(fieldSet.readLong("ADMIN_FEE_TYP_ID", null));
+            record.setORIG_TBL_SUBSYS_CD(fieldSet.readString("ORIG_TBL_SUBSYS_CD"));
+            record.setCHRG_CAT_CD(fieldSet.readString("CHRG_CAT_CD"));
+            record.setCEQ_IND(fieldSet.readString("CEQ_IND"));
+            record.setDB_USERID(fieldSet.readString("DB_USERID"));
+            record.setDB_TMSTAMP(fieldSet.readString("DB_TMSTAMP"));
+            record.setSOURCE_CLIENT_ID(fieldSet.readString("SOURCE_CLIENT_ID"));
+            record.setADMIN_CRT_METH_CD(fieldSet.readString("ADMIN_CRT_METH_CD"));
+            record.setEQ_ORD_NO(fieldSet.readLong("EQ_ORD_NO", null));
+            record.setNETACE_LOC_ID(fieldSet.readString("NETACE_LOC_ID"));
+            record.setSVC_PROD_ID_DISCNT(fieldSet.readLong("SVC_PROD_ID_DISCNT", null));
+            record.setBL_CYC_NO(fieldSet.readString("BL_CYC_NO"));
+            record.setCYC_MTH_YR(fieldSet.readString("CYC_MTH_YR"));
+            record.setTAXABLE_MNY(fieldSet.readDouble("TAXABLE_MNY", null));
+            record.setTAX_PROD_ID(fieldSet.readLong("TAX_PROD_ID", null));
+            record.setOTC_TYPE(fieldSet.readString("OTC_TYPE"));
+            record.setCHGBCK_SUBMISSION_ID(fieldSet.readString("CHGBCK_SUBMISSION_ID"));
+            record.setTAX_GEO_CODE(fieldSet.readString("TAX_GEO_CODE"));
+            record.setDATA_RT_FTPRNT_NO(fieldSet.readLong("DATA_RT_FTPRNT_NO", null));
+            record.setVODA_COUNTRY_CD(fieldSet.readString("VODA_COUNTRY_CD"));
+            record.setAUDIT_TRANS_ID(fieldSet.readString("AUDIT_TRANS_ID"));
+            record.setORIG_CREATE_TS(fieldSet.readString("ORIG_CREATE_TS"));
+            record.setINSTALL_LOAN_NO(fieldSet.readLong("INSTALL_LOAN_NO", null));
+            record.setINSTALL_FIN_MARKET_ID(fieldSet.readString("INSTALL_FIN_MARKET_ID"));
+            record.setLOAN_TERM_MTH_QTY(fieldSet.readInt("LOAN_TERM_MTH_QTY", null));
+            record.setTERM_BILLED_QTY(fieldSet.readInt("TERM_BILLED_QTY", null));
+
+            // Manually set the ORG_REC field with the entire original CSV line
+            record.setORG_REC(fieldSet.toString());
+
+            return record;
         }
     }
+}
+
 
